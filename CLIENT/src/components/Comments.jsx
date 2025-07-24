@@ -1,7 +1,7 @@
 import Comment from "./Comment";    
 import axios  from "axios";
 import { useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import {useAuth} from "@clerk/clerk-react" ;
+import {useAuth, useUser} from "@clerk/clerk-react" ;
 
 const fetchComments = async(postId) => {
   const res = await axios.get(`${import.meta.env.VITE_API_URL}/comments/${postId}`) ; 
@@ -9,6 +9,7 @@ const fetchComments = async(postId) => {
 };
 
 const Comments = ({postId}) => {
+    const {user} = useUser()
     const {isPending , error , data} = useQuery({
     queryKey: ["comments", postId], 
     queryFn: ()=> fetchComments(postId), 
@@ -19,7 +20,7 @@ const Comments = ({postId}) => {
   const {getToken} = useAuth()
 
 
-    const mutation = useMutation({
+  const mutation = useMutation({
   mutationFn: async (newComment) => {
   const token = await getToken();
   console.log("Sending with token:", token); // ✅
@@ -45,10 +46,8 @@ const Comments = ({postId}) => {
 
   });
 
-
-
-  if (isPending) return "Loading...." ; 
-  if (error) return "Something went wrong" + error.message ; 
+  // if (isPending) return "Loading...." ; 
+  // if (error) return "Something went wrong" + error.message ; 
   
   const handleSubmit = e => {
   e.preventDefault();
@@ -72,9 +71,32 @@ const Comments = ({postId}) => {
         <textarea name ="desc" placeholder="Write a comment..." className="w-full p-4 rounded-xl"/>
         <button className="bg-blue-800 px-4 py-3 text-white font-medium rounded-xl">Send</button>
       </div>
-      {data.map((comment) => (
+      { isPending
+       ? "Loading..." 
+       :error 
+       ? "Error loading comments!" 
+       :  
+       <>
+       {
+        mutation.isPending && (
+          <Comment comment= {{
+            desc: `${mutation.variables.desc}(Sending...)` , 
+            createdAt : new Date() , 
+            user : {
+              img : user.imageUrl, 
+              username : user.username , 
+
+            }
+          }} />
+        )
+       }
+
+
+       {data.map((comment) => (
         <Comment key= {comment._id} comment={comment}/>
       ))}
+       </>
+       }
       </form>
     </div>
   );

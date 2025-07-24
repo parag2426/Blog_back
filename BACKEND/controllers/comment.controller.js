@@ -34,7 +34,12 @@ export const addComment = async (req, res) => {
     });
 
     const savedComment = await newComment.save();
-    res.status(201).json(savedComment);
+    
+    setTimeout (()=>{
+      res.status(201).json(savedComment);
+    }, 3000) ; 
+
+    
   } catch (err) {
     console.error("❌ Error in addComment:", err);
     res.status(500).json({ message: "Server error", error: err.message });

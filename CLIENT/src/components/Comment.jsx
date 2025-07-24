@@ -9,8 +9,8 @@ const Comment = ({comment}) => {
 
 
 
-        <img src="userImg.jpeg"  className="w-10 h-10 rounded-full object-cover" alt="" />   
-        <span className="font-medium">John Doe</span>   {/*  commet.user.img */}
+        {comment.user.img && <img src={comment.user.img} className="w-10 h-10 rounded-full object-cover" alt="" />  }  
+        <span className="font-medium">{comment.user.username}</span>   {/*  commet.user.img */}
         <span className="text-sm">{format(comment.createdAt)}</span>
       </div>
       <div className="">

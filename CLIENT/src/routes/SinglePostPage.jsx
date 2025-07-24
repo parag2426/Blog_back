@@ -45,8 +45,8 @@ const SinglePostPage = () => {
       {/* Author / Meta Info */}
       <div className="text-gray-500 text-sm flex flex-wrap items-center gap-2 mb-10">
         <span>Written by</span>
-        <Link to="/author/john" className="text-blue-600 font-medium hover:underline">
-          John
+        <Link to="" className="text-blue-600 font-medium hover:underline">
+          {/* {data.user.username} */}  John
         </Link>
         <span>•</span>
         <Link
