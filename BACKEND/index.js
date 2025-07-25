@@ -31,6 +31,7 @@ app.use(ClerkExpressWithAuth());
 app.use('/users', userRoute);
 app.use('/comments', commentRoute); 
 app.use('/posts', postRoute); // Assuming you have anotherRoute defined
+app.use("/api/users", userRoute); 
 
 //Middleware to handle errors 
 app.use((error, req, res, next) => {

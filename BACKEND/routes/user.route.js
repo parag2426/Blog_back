@@ -4,6 +4,8 @@ import User from '../models/user.models.js';
 
 import { getUserSavedPosts , savePost } from '../controllers/user.controller.js';
 
+import { createUser } from '../controllers/user.controller.js';
+
 const router = express.Router();
 
 router.post('/register', async (req, res, next) => {
@@ -29,5 +31,7 @@ router.post('/register', async (req, res, next) => {
 
 router.get("/saved" , getUserSavedPosts)
 router.patch("/save" , savePost)
+
+router.post('/create', createUser);
 
 export default router;

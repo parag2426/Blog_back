@@ -1,6 +1,30 @@
 import { clerkClient } from "@clerk/express";
 import User from "../models/user.models.js";
 
+export const createUser = async (req, res) => {
+  try {
+    const { clerkUserId, username, img } = req.body;
+
+    // Check if user already exists
+    let user = await User.findOne({ clerkUserId });
+
+    if (!user) {
+      user = new User({
+        clerkUserId,
+        username,
+        img,
+      });
+
+      await user.save();
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    console.error("Error in creating user:", err);
+    res.status(500).json({ message: "Failed to create user" });
+  }
+};
+
 export const loginUser = async (req, res, next) => {
   try {
     const { userId } = req.auth;
@@ -60,6 +84,8 @@ export const savePost = async (req, res) => {
     });
   }
 
-  res.status(200).json(isSaved ? "Post unsaved" : "Post saved");
+  setTimeout(()=> {
+    res.status(200).json(isSaved ? "Post unsaved" : "Post saved");
+  }, 1000) ;
 };
 

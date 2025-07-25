@@ -1,29 +1,26 @@
-import { format } from "timeago.js"
+import { format } from "timeago.js";
 
 const Comment = ({ comment }) => {
   const user = comment.user;
-  console.log("comment user -->", user);
 
-  // Optional: skip rendering this comment if user is null
   if (!user) return null;
 
   return (
-    <div className="p-4 bg-slate-50 rounded-xl mb-8">
-      <div className="flex items-center gap-4">
-        {/* Only render image if it exists */}
+    <div className="p-4 bg-slate-50 rounded-xl mb-6 shadow-sm">
+      <div className="flex items-center gap-4 mb-2">
         {user.img && (
           <img
             src={user.img}
             className="w-10 h-10 rounded-full object-cover"
-            alt=""
+            alt={user.username}
           />
         )}
-        <span className="font-medium">{user.username}</span>
-        <span className="text-sm">{format(comment.createdAt)}</span>
+        <div>
+          <p className="font-semibold text-gray-800">{user.username}</p>
+          <p className="text-sm text-gray-500">{format(comment.createdAt)}</p>
+        </div>
       </div>
-      <div className="">
-        <p>{comment.desc}</p>
-      </div>
+      <p className="text-gray-700 leading-relaxed">{comment.desc}</p>
     </div>
   );
 };

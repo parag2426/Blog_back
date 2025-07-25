@@ -4,7 +4,11 @@ import {format} from "timeago.js";
 
 const PostListItems = ({post}) => {
   
+  const username = post.user?.username || "Unknown Author";
+  const category = post.category || "General";
 
+  console.log("username ----" , username)
+  console.log("category ----" , category)
 
   return (
     <div className="flex flex-col xl:flex-row gap-6 p-4 bg-white rounded-2xl shadow-sm mb-12">
@@ -32,10 +36,10 @@ const PostListItems = ({post}) => {
         {/* Meta Info */}
         <div className="flex flex-wrap items-center gap-2 text-gray-500 text-sm">
           <span>Written by</span>
-         <Link className="text-blue-500 hover:underline" to="#">John</Link>     {/*  {post.user.username} */}
+         <Link  className="text-blue-500 hover:underline" >John</Link>     {/*  {post.user.username}   to={`posts?author=${post.user.username}`} */} 
 
           <span>on</span>
-          <Link className="text-blue-500 hover:underline" to="/test">{post.category}</Link>
+          <Link className="text-blue-500 hover:underline" to={`/posts?cat=${post.category}`}>{post.category}</Link>
           <span>{format(post.createdAt)}</span>
         </div> 
 

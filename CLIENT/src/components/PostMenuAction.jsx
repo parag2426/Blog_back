@@ -183,7 +183,7 @@ const PostMenuAction = ({ post }) => {
         </div>
       )}
 
-      {(user && (isPostOwner || isAdmin)) && (
+      {(user && (isPostOwner || isAdmin)) && (  //post.user.username
         <div
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={handleDelete}
