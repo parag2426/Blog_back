@@ -1,10 +1,12 @@
 import { Link, useParams } from "react-router-dom";
-import { FiBookmark, FiTrash2, FiSearch } from "react-icons/fi";
+import {  FiSearch } from "react-icons/fi";
 import { FaFacebookF, FaInstagram } from "react-icons/fa";
 import Comments from "../components/Comments";
 import { format } from "timeago.js";
 import { useQuery } from '@tanstack/react-query';
 import axios from "axios";
+
+import PostMenuAction from "../components/PostMenuAction";
 
 const fetchPost = async (slug) => {
   const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts/${slug}`);
@@ -22,6 +24,7 @@ const SinglePostPage = () => {
   if (isPending) return "Loading...";
   if (error) return "Something went wrong: " + error.message;
   if (!data) return "Post not found!";
+  console.log("Data is -->" , data) ;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -46,7 +49,8 @@ const SinglePostPage = () => {
       <div className="text-gray-500 text-sm flex flex-wrap items-center gap-2 mb-10">
         <span>Written by</span>
         <Link to="" className="text-blue-600 font-medium hover:underline">
-          {/* {data.user.username} */}  John
+          {data.user?.username || "Unknown Author"}
+ 
         </Link>
         <span>•</span>
         <Link
@@ -100,7 +104,7 @@ const SinglePostPage = () => {
         </div>
 
         {/* Actions */}
-        <div className="bg-white p-6 rounded-3xl shadow-md">
+        {/* <div className="bg-white p-6 rounded-3xl shadow-md">
           <h2 className="text-sm font-semibold text-gray-500 mb-3">Actions</h2>
           <div className="flex flex-col gap-2">
             <button className="flex items-center gap-2 hover:text-blue-600 text-sm text-gray-700">
@@ -110,7 +114,10 @@ const SinglePostPage = () => {
               <FiTrash2 /> Delete this post
             </button>
           </div>
-        </div>
+        </div> */}
+
+        <PostMenuAction post={data}/>
+        
 
         {/* Categories */}
         <div className="bg-white p-6 rounded-3xl shadow-md">

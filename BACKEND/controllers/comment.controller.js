@@ -10,6 +10,7 @@ export const getPostComments = async (req, res) => {
     res.json(comments) ;
 }; 
 
+
 export const addComment = async (req, res) => {
   try {
     const clerkUserId = req.auth?.userId;

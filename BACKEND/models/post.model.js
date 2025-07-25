@@ -4,9 +4,9 @@ const { Schema } = mongoose;
 const postSchema = new Schema({
 
     user: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // Reference to the User model
-        // required: true,
+        required: true,
     }, 
     img: {
         type: String,
