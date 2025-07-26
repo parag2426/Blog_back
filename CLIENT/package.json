@@ -13,7 +13,7 @@
     "@clerk/clerk-react": "^5.35.2",
     "@tanstack/react-query": "^5.83.0",
     "axios": "^1.10.0",
-    "framer-motion": "^12.23.6",
+    "framer-motion": "^12.23.9",
     "imagekit": "^6.0.0",
     "imagekitio-react": "^4.3.0",
     "react": "^18.2.0",

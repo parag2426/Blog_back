@@ -1,34 +1,30 @@
-// Importing Clerk backend SDK to access session verification methods
-import { clerkClient } from "@clerk/clerk-sdk-node";
+import { Clerk } from '@clerk/backend';  // new import
+import User from "../models/user.models.js";
 
-// Middleware function to authenticate user requests
+const clerk = Clerk({ apiKey: process.env.CLERK_SECRET_KEY }); // initialize Clerk with secret
+
 export const authenticateUser = async (req, res, next) => {
   try {
-    // Extracting the Authorization header from the request
     const authHeader = req.headers.authorization;
-
-    // Splitting the header to get the token (format: "Bearer <token>")
     const token = authHeader && authHeader.split(" ")[1];
 
-    // If no token is found, respond with 401 Unauthorized
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
 
-    // Verifying the token using Clerk's session verification
-    const session = await clerkClient.sessions.verifySession(token);
+    const session = await clerk.sessions.verifySession(token); // <-- fixed
 
-    // If verification succeeds, attach the user's Clerk ID to the request
-    req.userId = session.userId;
+    const clerkUserId = session.userId;
+    const mongoUser = await User.findOne({ clerkId: clerkUserId });
 
-    // Call next() to proceed to the next middleware or route handler
+    if (!mongoUser) {
+      return res.status(401).json({ message: "User not registered in database" });
+    }
+
+    req.user = mongoUser;
     next();
   } catch (error) {
-    // Log any errors for debugging
     console.error("Auth error:", error);
-
-    // Send a 401 Unauthorized response if verification fails
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Unauthorized auth error." });
   }
 };
-

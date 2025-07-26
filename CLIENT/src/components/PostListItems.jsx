@@ -1,59 +1,67 @@
+import { Link } from "react-router-dom";
+import { format } from "timeago.js";
+import { FiUser } from "react-icons/fi";
 
-import { Link} from 'react-router-dom';
-import {format} from "timeago.js";  
-
-const PostListItems = ({post}) => {
-  
+const PostListItems = ({ post }) => {
   const username = post.user?.username || "Unknown Author";
   const category = post.category || "General";
-
-  console.log("username ----" , username)
-  console.log("category ----" , category)
+  const createdAt = post.createdAt || new Date();
 
   return (
-    <div className="flex flex-col xl:flex-row gap-6 p-4 bg-white rounded-2xl shadow-sm mb-12">
+    <div className="group flex flex-col xl:flex-row gap-6 p-6 bg-white rounded-2xl shadow-md hover:shadow-xl border transition-all duration-300">
+      {/* Post Image */}
+      {post.img && (
+        <Link to={`/${post.slug}`} className="w-full xl:w-1/3">
+          <img
+            src={post.img}
+            alt={post.title}
+            className="rounded-2xl object-cover w-full h-[200px] sm:h-[240px] transition-transform group-hover:scale-[1.03]"
+          />
+        </Link>
+      )}
 
-      {/* Image */}
-      {post.img && <div className=" w-full xl:w-1/3">
-        <img
-          src={post.img}
-          alt="Post"
-          className="rounded-2xl object-cover w-full h-full max-h-[200px]"
-        />
-      </div>}
-
-      {/* Details */}
+      {/* Post Content */}
       <div className="flex flex-col gap-4 w-full xl:w-2/3">
+        {/* Category */}
+        <Link
+          to={`/posts?cat=${category}`}
+          className="self-start bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full hover:bg-blue-200 transition"
+        >
+          {category}
+        </Link>
 
         {/* Title */}
         <Link
           to={`/${post.slug}`}
-          className="text-2xl sm:text-3xl font-semibold text-gray-900 hover:text-blue-800 transition duration-200"
+          className="text-2xl sm:text-3xl font-semibold text-gray-900 hover:text-blue-800 transition"
         >
           {post.title}
         </Link>
 
-        {/* Meta Info */}
-        <div className="flex flex-wrap items-center gap-2 text-gray-500 text-sm">
-          <span>Written by</span>
-         <Link  className="text-blue-500 hover:underline" >John</Link>     {/*  {post.user.username}   to={`posts?author=${post.user.username}`} */} 
+        {/* Author and Date */}
+        <div className="flex items-center gap-3 text-sm text-gray-500">
+          <FiUser className="text-gray-400" />
+          <Link
+            className="text-blue-500 hover:underline"
+            to={`/posts?author=${username}`}
+          >
+            {username}
+          </Link>
+          <span className="text-gray-400">•</span>
+          <span>{format(createdAt)}</span>
+        </div>
 
-          <span>on</span>
-          <Link className="text-blue-500 hover:underline" to={`/posts?cat=${post.category}`}>{post.category}</Link>
-          <span>{format(post.createdAt)}</span>
-        </div> 
-
-        {/* Summary */}
-        <p className="text-gray-700 leading-relaxed">
+        {/* Description */}
+        <p className="text-gray-700 leading-relaxed line-clamp-3">
           {post.desc}
         </p>
 
         {/* Read More */}
         <Link
           to={`/${post.slug}`}
-          className="text-blue-800 text-sm font-medium underline hover:text-blue-600 transition"
+          className="text-blue-600 text-sm font-medium hover:underline mt-2"
         >
-          Read more...
+          Read more →
         </Link>
       </div>
     </div>
@@ -61,3 +69,4 @@ const PostListItems = ({post}) => {
 };
 
 export default PostListItems;
+

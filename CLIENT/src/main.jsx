@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/clerk-react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './index.css';
 
+
 import {
   QueryClient, 
   QueryClientProvider
@@ -20,6 +21,7 @@ import Write from './routes/Write.jsx';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // ✅ Correct path
+import SavedPost from './routes/SavedPost.jsx';
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 const queryClient = new QueryClient();
@@ -36,6 +38,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="about" element={<AboutPage />} />
               <Route path="posts" element={<PostListPage />} />
               <Route path="write" element={<Write />} />
+              <Route path="save" element={<SavedPost />} />
               <Route path=":slug" element={<SinglePostPage />} />
             </Route>
 

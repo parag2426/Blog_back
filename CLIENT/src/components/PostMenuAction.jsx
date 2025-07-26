@@ -3,14 +3,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { toast } from "react-toastify"; // ✅ Added toast import
 
 const PostMenuAction = ({ post }) => {
-  const { user, isLoaded } = useUser(); // ✅ Use isLoaded
+  const { user, isLoaded } = useUser();
   const { getToken } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-
 
   const {
     isPending,
@@ -62,6 +61,21 @@ const PostMenuAction = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedPosts"] });
+      
+      toast.success(" Post saved successfully!", {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light", // Or "colored" depending on your design
+      toastClassName: "text-lg px-6 py-4 rounded-xl shadow-md font-semibold bg-white border border-gray-300",
+      bodyClassName: "text-gray-800 text-base",
+      icon: "💾", // optional, you already have emoji in text — remove if duplicated
+    });
+
+
     },
     onError: (error) => {
       console.log("Error saving post", error);
@@ -95,17 +109,17 @@ const PostMenuAction = ({ post }) => {
     if (!user) return navigate("/login");
     saveMutation.mutate();
   };
-    useEffect(() => {
+
+  useEffect(() => {
     console.log("🟢 Clerk user:", user);
     console.log("🟢 isLoaded:", isLoaded);
     console.log("🟢 Post received:", post);
   }, [user, isLoaded, post]);
 
-  if (!isLoaded) return null; // ✅ Wait for Clerk to load user info
+  if (!isLoaded) return null;
 
   const isAdmin = user?.publicMetadata?.role === "admin" || false;
 
-  // ✅ Use email address or custom field instead of username
   const currentUsername =
     user?.username || user?.publicMetadata?.username || user?.primaryEmailAddress?.emailAddress;
 
@@ -124,7 +138,6 @@ const PostMenuAction = ({ post }) => {
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={handleSave}
         >
-          {/* Save Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
@@ -147,7 +160,6 @@ const PostMenuAction = ({ post }) => {
             />
           </svg>
           <span>Save this Post</span>
-          {saveMutation.isPending && <span className="text-xs">(saving...)</span>}
         </div>
       )}
 
@@ -156,7 +168,6 @@ const PostMenuAction = ({ post }) => {
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={handleFeature}
         >
-          {/* Feature Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 48 48"
@@ -179,16 +190,14 @@ const PostMenuAction = ({ post }) => {
             />
           </svg>
           <span>Feature</span>
-          {featureMutation.isPending && <span className="text-xs">(featuring...)</span>}
         </div>
       )}
 
-      {(user && (isPostOwner || isAdmin)) && (  //post.user.username
+      {(user && (isPostOwner || isAdmin)) && (
         <div
           className="flex items-center gap-2 py-2 text-sm cursor-pointer"
           onClick={handleDelete}
         >
-          {/* Delete Icon */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 50 50"

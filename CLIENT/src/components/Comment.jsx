@@ -2,7 +2,6 @@ import { format } from "timeago.js";
 
 const Comment = ({ comment }) => {
   const user = comment.user;
-
   if (!user) return null;
 
   return (
@@ -11,8 +10,8 @@ const Comment = ({ comment }) => {
         {user.img && (
           <img
             src={user.img}
-            className="w-10 h-10 rounded-full object-cover"
             alt={user.username}
+            className="w-10 h-10 rounded-full object-cover"
           />
         )}
         <div>
@@ -20,10 +19,9 @@ const Comment = ({ comment }) => {
           <p className="text-sm text-gray-500">{format(comment.createdAt)}</p>
         </div>
       </div>
-      <p className="text-gray-700 leading-relaxed">{comment.desc}</p>
+      <p className="text-gray-700 leading-relaxed whitespace-pre-line">{comment.desc}</p>
     </div>
   );
 };
 
 export default Comment;
-

@@ -418,9 +418,13 @@ const SinglePostPage = () => {
         </div>
       </aside>
       {/* Comments */}
-        <div className="pt-10 border-t mt-12">
+      <div className="pt-16 mt-20 border-t border-gray-200">
+        <h3 className="text-2xl font-bold text-gray-800 mb-8">💬 Comments</h3>
+
+        <div className="space-y-6">
           <Comments postId={data._id} />
         </div>
+      </div>
     </div>
   );
 };

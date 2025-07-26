@@ -1,62 +1,33 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SignedIn, SignedOut, useAuth, UserButton  } from '@clerk/clerk-react';
-import { useEffect } from 'react';
+import { SignedIn, SignedOut, useAuth, UserButton } from '@clerk/clerk-react';
+import { FiMenu, FiX } from 'react-icons/fi'; // icons for menu
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false); ;
-
-  // const {getToken} = useAuth()
-
-  // useEffect(()=>{
-  //   getToken().then(token => console.log(token));
-  // }, )
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="w-full px-4 py-4 flex items-center justify-between bg-white relative">
-      {/* Logo */}
-      <Link to="/" className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-        <img src="/logo.png" alt="Logo" className="w-8 h-8" />
-        <span>Bloggify</span>
-      </Link>
+    <header className="w-full bg-white shadow-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/logo.png" alt="Logo" className="w-10 h-10 drop-shadow-md" />
+          <span className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+            Bloggify
+          </span>
+        </Link>
 
-      {/* Mobile menu toggle button */}
-      <div className="md:hidden text-3xl cursor-pointer" onClick={() => setMenuOpen(prev => !prev)}>
-        {menuOpen ? '✖' : '☰'}
-      </div>
-
-      {/* Desktop nav */}
-      <div className="hidden md:flex gap-6 text-gray-800 font-medium items-center">
-        <Link to="/">Home</Link>
-        <Link to="/">Trending</Link>
-        <Link to="/">Most Popular</Link>
-        <Link to="/about">About</Link>
-
-        <SignedOut>
-          <Link to="/login">
-            <button className="bg-blue-700 hover:bg-blue-800 text-white py-1 px-4 rounded-full transition">
-              Login 👋
-            </button>
-          </Link>
-        </SignedOut>
-
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="absolute top-16 left-0 w-full h-[calc(100vh-4rem)] bg-gradient-to-b from-[#e5eaff] to-[#cfd8ff] flex flex-col items-center justify-center space-y-6 z-50 transition-all duration-300">
-          <Link to="/" className="text-lg text-gray-800 font-medium">Home</Link>
-          <Link to="/" className="text-lg text-gray-800 font-medium">Trending</Link>
-          <Link to="/" className="text-lg text-gray-800 font-medium">Most Popular</Link>
-          <Link to="/about" className="text-lg text-gray-800 font-medium">About</Link>
+        {/* Desktop Menu */}
+        <nav className="hidden md:flex gap-6 items-center font-medium text-gray-800 text-lg">
+          <Link to="/" className="hover:text-blue-700 transition">Home</Link>
+          <Link to="/trending" className="hover:text-blue-700 transition">Trending</Link>
+          <Link to="/save" className="hover:text-blue-700 transition">Saved</Link>
+          <Link to="/about" className="hover:text-blue-700 transition">About</Link>
 
           <SignedOut>
             <Link to="/login">
-              <button className="py-2 px-4 rounded-3xl bg-blue-800 text-white">
-                Login
+              <button className="bg-gradient-to-r from-blue-700 to-indigo-700 hover:brightness-110 text-white py-1.5 px-5 rounded-full transition-all duration-200">
+                Login 👋
               </button>
             </Link>
           </SignedOut>
@@ -64,10 +35,43 @@ const Navbar = () => {
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
+        </nav>
+
+        {/* Mobile Menu Icon */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-3xl text-gray-700 focus:outline-none"
+        >
+          {menuOpen ? <FiX /> : <FiMenu />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Panel */}
+      {menuOpen && (
+        <div className="md:hidden px-6 pb-6 pt-4 bg-white shadow-md rounded-b-2xl">
+          <div className="flex flex-col gap-4 text-lg font-medium text-gray-800">
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">Home</Link>
+            <Link to="/trending" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">Trending</Link>
+            <Link to="/save" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">Saved</Link>
+            <Link to="/about" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">About</Link>
+
+            <SignedOut>
+              <Link to="/login">
+                <button className="mt-4 py-2 px-6 bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-full shadow-md">
+                  Login
+                </button>
+              </Link>
+            </SignedOut>
+
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+          </div>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 
 export default Navbar;
+

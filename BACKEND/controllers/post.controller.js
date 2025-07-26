@@ -93,52 +93,82 @@ export const getPost = async (req, res) => {
   }
 };
 
+
+
+
+
+
 // Create a new post
 export const createPost = async (req, res) => {
   try {
+    // ✅ Step 1: Get the post title from request body
     const title = req.body.title;
+
+    // ✅ Step 2: Generate a base slug from the title (e.g., "My Post Title" -> "my-post-title")
     let baseSlug = title.trim().replace(/ /g, "-").toLowerCase();
     let slug = baseSlug;
 
+    // ✅ Step 3: Check if a post with this slug already exists
     let existingPost = await Post.findOne({ slug });
     let counter = 2;
 
+    // 🔁 If a post with the same slug exists, append a counter to make it unique
     while (existingPost) {
       slug = `${baseSlug}-${counter}`;
       existingPost = await Post.findOne({ slug });
       counter++;
     }
 
-    // ✅ Get user from authenticated session (Clerk middleware should add req.user)
-    const mongoUser = req.user; // This is the correct source of the logged-in user
+    // ✅ Step 4: Get the authenticated user from request
+    // Clerk middleware (e.g., `requireAuth()`) should have added `req.user`
+    const mongoUser = req.user;
 
+    // ❌ Error Handling: Check if user is not present (unauthorized access)
     if (!mongoUser || !mongoUser._id) {
-      return res.status(401).json({ error: "Unauthorized: User not found" });
+      return res.status(401).json({ error: "Unauthorized: User not found while posting" });
     }
 
+    // ✅ Step 5: Create a new Post object
     const newPost = new Post({
-      ...req.body,
-      slug,
-      user: mongoUser._id, // Required field
+      ...req.body,     // Spread the rest of the request body into the Post (e.g., content, category, etc.)
+      slug,            // Unique slug we just generated
+      user: mongoUser._id,  // Attach the logged-in user's ID
     });
 
+    // 🪵 Log for debugging
     console.log("Trying to save post:", newPost);
 
+    // ✅ Step 6: Save the new post to MongoDB
     const post = await newPost.save();
 
+    // ✅ Step 7: Return the created post in response
     res.status(200).json(post);
+
   } catch (error) {
+    // ❌ Catch and log any unexpected errors
     console.error("❌ Error creating post:", error.message);
     console.log("📝 Request body:", req.body);
     res.status(500).json({ error: "Something went wrong while creating the post" });
   }
 };
 
+
+
+
+
+
 // const role = req.auth.sessionClaims?metadata?.role ||"user"
 // if(role ==="admin")(
 //   await Post.findByIdAndDelete(req.params.id)
 //   res.status(200).json("Post has been deleted");
 // )
+
+
+
+
+
+
+
 
 
 // Delete post by ID

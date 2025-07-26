@@ -6,13 +6,13 @@ import FeaturedPosts from '../components/Featuredpost';
 const HomePage = () => {
   return (
     <div className="mt-4 flex flex-col gap-8 px-4">
-      
-      {/* Breadcrumb */}
+    {/*       
+      Breadcrumb
       <div className="flex gap-2 text-gray-600">
         <Link to="/">Home</Link>
         <span>*</span>
         <span className="text-blue-800">Blogs and Articles</span>
-      </div>
+      </div> */}
 
       {/* Introduction Section */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-8">
