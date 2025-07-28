@@ -1,30 +1,24 @@
-import { Clerk } from '@clerk/backend';  // new import
 import User from "../models/user.models.js";
-
-const clerk = Clerk({ apiKey: process.env.CLERK_SECRET_KEY }); // initialize Clerk with secret
 
 export const authenticateUser = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(" ")[1];
+    const clerkUserId = req.auth?.userId;
 
-    if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+    if (!clerkUserId) {
+      return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const session = await clerk.sessions.verifySession(token); // <-- fixed
-
-    const clerkUserId = session.userId;
-    const mongoUser = await User.findOne({ clerkId: clerkUserId });
+    const mongoUser = await User.findOne({ clerkUserId });
 
     if (!mongoUser) {
-      return res.status(401).json({ message: "User not registered in database" });
+      return res.status(401).json({ error: "User not found in DB" });
     }
 
-    req.user = mongoUser;
+    req.user = mongoUser; // attach user to req
     next();
-  } catch (error) {
-    console.error("Auth error:", error);
-    return res.status(401).json({ message: "Unauthorized auth error." });
+  } catch (err) {
+    console.error("Auth error:", err);
+    res.status(500).json({ error: "Authentication failed" });
   }
 };
+

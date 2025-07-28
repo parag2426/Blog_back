@@ -38,7 +38,7 @@ createRoot(document.getElementById('root')).render(
               <Route path="about" element={<AboutPage />} />
               <Route path="posts" element={<PostListPage />} />
               <Route path="write" element={<Write />} />
-              <Route path="save" element={<SavedPost />} />
+              <Route path="saved" element={<SavedPost />} />
               <Route path=":slug" element={<SinglePostPage />} />
             </Route>
 

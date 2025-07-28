@@ -10,6 +10,8 @@ import webhookRoute from './routes/webhook.route.js';
 import {ClerkExpressWithAuth }  from "@clerk/clerk-sdk-node";
 // In your index.js or app.js
 
+import savedRoute from './routes/saved.route.js';
+
 import cors from "cors" ; 
 
 
@@ -32,6 +34,7 @@ app.use('/users', userRoute);
 app.use('/comments', commentRoute); 
 app.use('/posts', postRoute); // Assuming you have anotherRoute defined
 app.use("/api/users", userRoute); 
+app.use('/saved', savedRoute);
 
 //Middleware to handle errors 
 app.use((error, req, res, next) => {
