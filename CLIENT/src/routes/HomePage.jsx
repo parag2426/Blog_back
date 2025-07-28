@@ -48,7 +48,7 @@ const HomePage = () => {
         </motion.div>
 
         {/* Rotating Circular Button */}
-        <Link to="/write" className="hidden md:block relative w-[200px] h-[200px] block shrink-0">
+        <Link to="/write" className=" relative w-[200px] h-[200px] block shrink-0">
           <svg
             viewBox="0 0 200 200"
             width="200"
@@ -95,14 +95,7 @@ const HomePage = () => {
       </motion.div>
 
       {/* Post List */}
-      <motion.h1
-        className="my-8 text-2xl text-gray-600"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-      >
-        Recent Posts
-      </motion.h1>
+     
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

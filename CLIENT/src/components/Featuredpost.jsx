@@ -1,98 +1,55 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const FeaturedPosts = () => {
   return (
-    <div className="mt-8 flex flex-col lg:flex-row gap-8">
+    <section className="w-full py-16 px-6 md:px-12 lg:px-24 bg-[#fefcf8]">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-16 max-w-7xl mx-auto">
 
-      {/* ===== Left Large Post ===== */}
-      <div className="w-full lg:w-1/2 flex flex-col gap-4">
-
-        {/* Image */}
-        <img
-          src="featured1.jpeg"
-          alt="Featured"
-          className="rounded-3xl object-cover w-full h-64"
-        />
-
-        {/* Meta */}
-        <div className="flex items-center gap-4">
-          <h1 className="font-semibold lg:text-lg">01.</h1>
-          <Link to="/posts?cat=web-design" className="text-blue-800 lg:text-lg">
-            Web Design
+        {/* === Left Text Section === */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.6 }} 
+          className="w-full lg:w-1/2 text-center lg:text-left"
+        >
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-gray-900 mb-6 tracking-tight">
+            Where Stories <br /> Find Their Voice
+          </h1>
+          <p className="text-gray-600 mb-6 max-w-md mx-auto lg:mx-0 text-base leading-relaxed">
+            Discover inspiring stories, writing tips, and real experiences from writers and creatives around the world.
+          </p>
+          <Link
+            to="/posts"
+            className="inline-block mt-2 px-6 py-3 text-sm font-semibold border border-gray-800 text-gray-800 rounded-full hover:bg-gray-900 hover:text-white transition"
+          >
+            Explore Featured Posts
           </Link>
-          <span className="text-gray-500">2 days ago</span>
-        </div>
+        </motion.div>
 
-        {/* Title */}
-        <Link to="/test" className="text-xl lg:text-3xl font-semibold lg:font-bold">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-        </Link>
+        {/* === Right Image Card === */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          transition={{ duration: 0.7 }} 
+          className="w-full lg:w-1/2 bg-white shadow-xl rounded-3xl overflow-hidden"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1170&q=80"
+            alt="Writing Desk"
+            className="w-full h-80 object-cover rounded-t-3xl"
+          />
+          <div className="p-6 text-center">
+            <p className="text-xs text-gray-500 uppercase mb-1 tracking-widest">Editor’s Pick</p>
+            <h3 className="text-2xl font-semibold text-gray-900">The Art of Writing in the Digital Age</h3>
+            <p className="text-sm text-gray-500 mt-1">Creative • Minimalism • Focus</p>
+          </div>
+        </motion.div>
       </div>
-
-      {/* ===== Right Small Posts ===== */}
-      <div className="w-full lg:w-1/2 flex flex-col gap-4">
-
-        {/* Second Post */}
-        <div className="lg:h-1/3 flex justify-between gap-4">
-          <img
-            src="featured2.jpeg"
-            alt="Featured 2"
-            className="rounded-3xl object-cover w-1/3 aspect-video"
-          />
-          <div className="w-2/3">
-            <div className="flex items-center gap-4 text-sm lg:text-base mb-2">
-              <h2 className="font-semibold">02.</h2>
-              <Link to="/posts?cat=web-design" className="text-blue-800">Web Design</Link>
-              <span className="text-gray-500">2 days ago</span>
-            </div>
-            <Link to="/test" className="text-base sm:text-lg md:text-2xl">
-              Lorem ipsum dolor sit amet.
-            </Link>
-          </div>
-        </div>
-
-        {/* Third Post */}
-        <div className="lg:h-1/3 flex justify-between gap-4">
-          <img
-            src="featured3.jpeg"
-            alt="Featured 3"
-            className="rounded-3xl object-cover w-1/3 aspect-video"
-          />
-          <div className="w-2/3">
-            <div className="flex items-center gap-4 text-sm lg:text-base mb-2">
-              <h2 className="font-semibold">03.</h2>
-              <Link to="/posts?cat=ai" className="text-blue-800">AI</Link>
-              <span className="text-gray-500">3 days ago</span>
-            </div>
-            <Link to="/test" className="text-base sm:text-lg md:text-2xl">
-              Exploring the future of intelligence.
-            </Link>
-          </div>
-        </div>
-
-        {/* Fourth Post */}
-        <div className="lg:h-1/3 flex justify-between gap-4">
-          <img
-            src="featured4.jpeg"
-            alt="Featured 4"
-            className="rounded-3xl object-cover w-1/3 aspect-video"
-          />
-          <div className="w-2/3">
-            <div className="flex items-center gap-4 text-sm lg:text-base mb-2">
-              <h2 className="font-semibold">04.</h2>
-              <Link to="/posts?cat=fashion-design" className="text-blue-800">Fashion</Link>
-              <span className="text-gray-500">4 days ago</span>
-            </div>
-            <Link to="/test" className="text-base sm:text-lg md:text-2xl">
-              Style meets storytelling in modern fashion.
-            </Link>
-          </div>
-        </div>
-
-      </div>
-    </div>
+    </section>
   );
 };
 
 export default FeaturedPosts;
+
 

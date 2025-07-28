@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 const AboutPage = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const AboutPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between">
-      {/* Hero Section */}
+      {/* === Hero Section === */}
       <div
         className="relative bg-cover bg-center h-[70vh] flex items-center justify-center text-white"
         style={{
@@ -31,70 +32,95 @@ const AboutPage = () => {
         }}
       >
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-        <div className="relative z-10 text-center px-6">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
+        <motion.div
+          className="relative z-10 text-center px-6"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight drop-shadow-lg">
             Your Voice Deserves to Be Heard
           </h1>
-          <p className="text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md">
-            Welcome to the ultimate blogging platform designed for storytellers,
-            thinkers, and creators like you.
+          <p className="text-lg md:text-xl max-w-2xl mx-auto drop-shadow-md text-gray-200">
+            Welcome to the ultimate blogging platform built for writers, dreamers, and digital creators.
           </p>
-        </div>
+        </motion.div>
       </div>
 
-      {/* About Section */}
-      <section className="px-6 md:px-24 py-16 text-center bg-white">
-        <h2 className="text-3xl font-bold text-indigo-700 mb-6">
+      {/* === About Section === */}
+      <section className="px-6 md:px-24 py-20 bg-white text-center">
+        <motion.h2 
+          className="text-3xl md:text-4xl font-bold text-indigo-700 mb-6"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           Why Choose Our Platform?
-        </h2>
-        <p className="text-gray-600 text-md md:text-lg mb-12 max-w-3xl mx-auto">
-          Whether you’re an experienced writer or just getting started, our
-          platform gives you the tools to share your voice with the world.
-          Reach your audience, grow your brand, and connect with fellow
-          creators—all in one place.
-        </p>
+        </motion.h2>
+        <motion.p
+          className="text-gray-600 text-md md:text-lg mb-12 max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Whether you’re a seasoned writer or just getting started, we provide the tools to help you connect, create, and grow your presence online.
+        </motion.p>
 
         <div className="grid md:grid-cols-3 gap-10 text-left max-w-5xl mx-auto">
-          <div className="bg-indigo-50 rounded-xl p-6 shadow hover:shadow-md transition">
-            <h3 className="text-xl font-semibold mb-2">🌍 Global Reach</h3>
-            <p className="text-gray-600">
-              Instantly publish your thoughts and reach readers around the world.
-            </p>
-          </div>
-          <div className="bg-indigo-50 rounded-xl p-6 shadow hover:shadow-md transition">
-            <h3 className="text-xl font-semibold mb-2">✍️ Powerful Editor</h3>
-            <p className="text-gray-600">
-              Write freely with our distraction-free, rich-text editor built
-              for creators.
-            </p>
-          </div>
-          <div className="bg-indigo-50 rounded-xl p-6 shadow hover:shadow-md transition">
-            <h3 className="text-xl font-semibold mb-2">📈 Creator Growth</h3>
-            <p className="text-gray-600">
-              Track your performance, grow your community, and get discovered
-              faster.
-            </p>
-          </div>
+          {[
+            {
+              icon: "🌍",
+              title: "Global Reach",
+              desc: "Share your stories with readers across the world in just one click.",
+            },
+            {
+              icon: "✍️",
+              title: "Powerful Editor",
+              desc: "Craft beautiful content with our distraction-free rich text editor.",
+            },
+            {
+              icon: "📈",
+              title: "Creator Growth",
+              desc: "Analyze, adapt, and accelerate your growth with performance tools.",
+            },
+          ].map((item, index) => (
+            <motion.div
+              key={item.title}
+              className="bg-indigo-50 rounded-2xl p-6 shadow hover:shadow-md transition"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+            >
+              <h3 className="text-2xl font-semibold mb-2">
+                {item.icon} {item.title}
+              </h3>
+              <p className="text-gray-600 text-sm md:text-base">{item.desc}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* Call to Action Section */}
-      <section className="bg-indigo-600 py-16 text-white text-center">
-        <h2 className="text-3xl font-semibold mb-4">Start Your Journey Today</h2>
-        <p className="text-md md:text-lg mb-8 max-w-xl mx-auto">
-          Thousands of writers have already joined our platform. Don’t miss out
-          on your chance to make your voice heard.
+      {/* === CTA Section === */}
+      <motion.section 
+        className="bg-indigo-600 py-20 text-white text-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Start Your Journey Today</h2>
+        <p className="text-md md:text-lg mb-8 max-w-xl mx-auto text-gray-200">
+          Join thousands of creators already building communities and sharing stories. It’s your turn to shine.
         </p>
 
         <button
           onClick={handleStartClick}
-          className="px-8 py-3 bg-white text-indigo-700 font-semibold rounded-full shadow-md hover:bg-gray-100 transition duration-300"
+          className="px-8 py-3 bg-white text-indigo-700 font-semibold rounded-full shadow hover:bg-gray-100 transition duration-300"
         >
           Get Started
         </button>
-      </section>
+      </motion.section>
 
-      {/* Footer */}
+      {/* === Footer === */}
       <footer className="text-center text-sm text-gray-500 border-t pt-6 pb-4 bg-gray-100">
         © {new Date().getFullYear()} Blogging Platform. All rights reserved.
       </footer>

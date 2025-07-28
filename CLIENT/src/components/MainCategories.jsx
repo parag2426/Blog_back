@@ -1,45 +1,6 @@
-// import { Link } from 'react-router-dom';
-// import Search from './Search';
-
-
-// const MainCategories = () => {
-//   return (
-//     <div className="hidden md:flex items-center justify-between bg-white rounded-full px-6 py-4 shadow-md gap-6">
-      
-//       {/* Category Links */}
-//       <div className="flex flex-wrap items-center gap-4">
-//         <Link to="/posts" className="bg-blue-800 text-white px-4 py-2 rounded-full hover:bg-blue-900 transition">
-//           All Posts
-//         </Link>
-//         <Link to="/posts?cat=Development" className="text-blue-800 px-4 py-2 rounded-full hover:bg-blue-100 transition">
-//           Web Design
-//         </Link>
-//         <Link to="/posts?cat=web-design" className="text-blue-800 px-4 py-2 rounded-full hover:bg-blue-100 transition">
-//           Development
-//         </Link>
-//         <Link to="/posts?cat=AI" className="text-blue-800 px-4 py-2 rounded-full hover:bg-blue-100 transition">
-//           AI
-//         </Link>
-//         <Link to="/posts?cat=fashion-design" className="text-blue-800 px-4 py-2 rounded-full hover:bg-blue-100 transition">
-//           Fashion Design
-//         </Link>
-//       </div>
-
-//       {/* Divider */}
-//       <span className="text-gray-300 text-xl">|</span>
-
-//       {/* Search Input */}
-//       <Search/>
-//     </div>
-//   );
-// };
-
-// export default MainCategories;
-
 import { Link, useLocation } from 'react-router-dom';
 import Search from './Search';
 
-// Define your categories as an array
 const categories = [
   { name: 'All Posts', query: '' },
   { name: 'Web Design', query: 'web-design' },
@@ -49,28 +10,21 @@ const categories = [
 ];
 
 const MainCategories = () => {
-  const location = useLocation();
-
-  // Helper to get current category from URL
-  const getCurrentCat = () => {
-    const params = new URLSearchParams(location.search);
-    return params.get('cat') || '';
-  };
-
-  const currentCat = getCurrentCat();
+  const { pathname, search } = useLocation();
+  const currentCat = new URLSearchParams(search).get('cat') || '';
 
   return (
-    <div className="hidden md:flex items-center justify-between bg-white rounded-full px-6 py-4 shadow-md gap-6">
+    <div className="bg-white rounded-2xl shadow-md px-4 py-4 md:px-8 md:py-5 flex flex-col md:flex-row items-center justify-between gap-4">
       
-      {/* Category Links */}
-      <div className="flex flex-wrap items-center gap-4">
+      {/* Scrollable Category Buttons */}
+      <div className="flex flex-wrap md:flex-nowrap gap-3 w-full md:w-auto overflow-x-auto no-scrollbar">
         {categories.map(({ name, query }) => {
-          const isActive = currentCat === query || (query === '' && location.pathname === '/posts');
+          const isActive = currentCat === query || (query === '' && pathname === '/posts');
           return (
             <Link
               key={query || 'all'}
               to={query ? `/posts?cat=${query}` : '/posts'}
-              className={`px-4 py-2 rounded-full transition ${
+              className={`whitespace-nowrap px-4 py-2 rounded-full font-medium text-sm transition-colors duration-200 ${
                 isActive
                   ? 'bg-blue-800 text-white hover:bg-blue-900'
                   : 'text-blue-800 hover:bg-blue-100'
@@ -82,14 +36,15 @@ const MainCategories = () => {
         })}
       </div>
 
-      {/* Divider */}
-      <span className="text-gray-300 text-xl">|</span>
-
-      {/* Search Input */}
-      <Search />
+      {/* Search Field */}
+      <div className="w-full md:w-auto mt-2 md:mt-0">
+        <Search />
+      </div>
     </div>
   );
 };
 
 export default MainCategories;
+
+
 

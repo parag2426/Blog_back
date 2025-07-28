@@ -2,78 +2,162 @@ import { Link } from "react-router-dom";
 import { format } from "timeago.js";
 import { motion } from "framer-motion";
 
-const PostListItem = ({ post }) => {
-  const username = post?.user?.username || "Unknown Author";
+// Utility to truncate description
+const truncateWords = (text = "", numWords = 5) => {
+  return text.split(" ").slice(0, numWords).join(" ") + " ...";
+};
+
+const PostListItem = ({ post, index = 0 }) => {
   const category = post?.category || "General";
-  const createdAt = post?.createdAt || new Date();
-  const desc = post?.desc?.slice(0, 160) + "...";
+  const desc = truncateWords(post?.desc || "Read More...");
   const title = post?.title || "Untitled Post";
-  const comments = post?.comments?.length || 0;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      className="flex justify-between gap-4 mb-6 group cursor-pointer"
+      initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="flex flex-row gap-3 md:gap-4 lg:gap-5 bg-white rounded-2xl shadow-md p-3 md:p-4 lg:p-5 hover:shadow-lg transition duration-300 border-2 border-blue-200"
+      transition={{ 
+        duration: 0.6, 
+        delay: index * 0.1,
+        ease: "easeOut" 
+      }}
+      whileHover={{ 
+        y: -8,
+        transition: { duration: 0.3, ease: "easeOut" }
+      }}
+      whileTap={{ scale: 0.98 }}
     >
-      {/* Image on the Left - Always horizontal, smaller for mobile */}
-      <Link
-        to={`/${post.slug}`}
-        className="w-20 sm:w-24 md:w-32 lg:w-40 xl:w-48 2xl:w-52 h-16 sm:h-20 md:h-24 lg:h-28 xl:h-32 2xl:h-36 overflow-hidden rounded-xl flex-shrink-0 self-start"
+      {/* Clean Image Section */}
+      <motion.div
+        className="w-1/3 overflow-hidden rounded-xl"
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <motion.img
-          whileHover={{ scale: 1.05 }}
-          transition={{ duration: 0.3 }}
           src={post.img}
           alt={title}
-          className="w-full h-full object-cover rounded-xl"
+          className="object-cover w-full aspect-video"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          whileHover={{ scale: 1.1 }}
         />
-      </Link>
+      </motion.div>
 
-      {/* Content on the Right */}
-      <div className="flex flex-col justify-between flex-1 text-left min-w-0">
-        {/* Date + Category */}
-        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between text-xs md:text-sm text-gray-500 mb-1 md:mb-2 gap-1 sm:gap-2">
-          <span className="flex-shrink-0 text-xs">
-            {new Date(createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long", 
-              day: "numeric",
-            })}{" "}
-            • 2 min read
-          </span>
-          <Link
-            to={`/posts?cat=${category}`}
-            className="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded-full hover:bg-blue-200 transition flex-shrink-0 self-start"
+      {/* Animated Content */}
+      <motion.div 
+        className="w-2/3"
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ 
+          duration: 0.6, 
+          delay: (index * 0.1) + 0.2,
+          ease: "easeOut" 
+        }}
+      >
+        {/* Category and Date */}
+        <motion.div 
+          className="flex items-center gap-4 text-sm lg:text-base mb-2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.5, 
+            delay: (index * 0.1) + 0.3,
+            ease: "easeOut" 
+          }}
+        >
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to={`/posts?cat=${category}`}
+              className="text-blue-800 hover:text-blue-900 transition-colors duration-300 relative"
+            >
+              <motion.span
+                className="relative z-10"
+                whileHover={{ 
+                  textShadow: "0 0 8px rgba(59, 130, 246, 0.5)" 
+                }}
+              >
+                {category}
+              </motion.span>
+              <motion.div
+                className="absolute inset-0 bg-blue-100 rounded-lg -z-10"
+                initial={{ scaleX: 0 }}
+                whileHover={{ scaleX: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{ originX: 0 }}
+              />
+            </Link>
+          </motion.div>
+          
+          <motion.span 
+            className="text-gray-500"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ 
+              duration: 0.4, 
+              delay: (index * 0.1) + 0.4 
+            }}
           >
-            {category}
-          </Link>
-        </div>
+            {format(post.createdAt)}
+          </motion.span>
+        </motion.div>
 
         {/* Title */}
-        <Link to={`/${post.slug}`} className="block mb-1 md:mb-2">
-          <h2 className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 hover:text-purple-700 transition leading-tight line-clamp-2">
-            {title}
-          </h2>
-        </Link>
+        <motion.div
+          whileHover={{ x: 5 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <Link
+            to={`/${post.slug}`}
+            className="text-base sm:text-lg md:text-xl font-medium text-gray-900 hover:text-blue-700 transition-colors duration-300 block"
+          >
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.5, 
+                delay: (index * 0.1) + 0.4,
+                ease: "easeOut" 
+              }}
+              whileHover={{ 
+                textShadow: "0 2px 4px rgba(0,0,0,0.1)" 
+              }}
+            >
+              {title}
+            </motion.span>
+          </Link>
+        </motion.div>
 
-        {/* Description - Hidden on very small screens */}
-        <p className="hidden sm:block text-gray-700 text-xs md:text-sm lg:text-base mb-2 md:mb-3 leading-relaxed flex-grow line-clamp-2 md:line-clamp-3">
+        {/* Short Description */}
+        <motion.p
+          className="text-sm text-gray-600 mt-2"
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.5, 
+            delay: (index * 0.1) + 0.5,
+            ease: "easeOut" 
+          }}
+          whileHover={{ 
+            color: "#374151",
+            transition: { duration: 0.2 }
+          }}
+        >
           {desc}
-        </p>
+        </motion.p>
 
-        {/* Author & Comments */}
-        <div className="flex justify-between items-center text-xs text-gray-500 mt-auto">
-          <span className="truncate mr-3">By {username}</span>
-          <span className="flex-shrink-0">{comments} comments</span>
-        </div>
-      </div>
+        {/* Underline on hover */}
+        <motion.div
+          className="h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 mt-3"
+          initial={{ scaleX: 0, opacity: 0 }}
+          whileHover={{ scaleX: 1, opacity: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{ originX: 0 }}
+        />
+      </motion.div>
     </motion.div>
   );
 };
 
 export default PostListItem;
-
-
-

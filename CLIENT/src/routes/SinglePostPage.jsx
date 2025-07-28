@@ -337,7 +337,7 @@ const SinglePostPage = () => {
         <div className="text-sm text-gray-500 flex flex-wrap items-center gap-2">
           <span>By</span>
           <Link to="#" className="text-blue-600 font-medium hover:underline">
-            {data.user?.username || "Unknown Author"}
+            {data.user?.username || "Palak Jain"}
           </Link>
           <span>•</span>
           <Link
@@ -379,7 +379,7 @@ const SinglePostPage = () => {
             />
             <div>
               <h3 className="font-bold text-blue-800">
-                {data.user?.username || "John Doe"}
+                {data.user?.username || "Palak Jain"}
               </h3>
               <p className="text-sm text-gray-500 leading-snug">
                 Web developer & designer exploring UI/UX and AI intersections.
