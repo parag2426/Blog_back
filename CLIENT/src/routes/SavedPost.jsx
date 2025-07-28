@@ -1,31 +1,42 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "@clerk/clerk-react";
 
 const SavedPost = () => {
   const [savedPosts, setSavedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { getToken } = useAuth();
 
   useEffect(() => {
-   const fetchSavedPosts = async () => {
-  try {
-    const res = await axios.get('/saved');
-    console.log('Response:', res.data); // Add this line to see the shape
-    setSavedPosts(Array.isArray(res.data) ? res.data : res.data.saved || []);
-  } catch (err) {
-    console.error('Error fetching saved posts:', err);
-  } finally {
-    setLoading(false);
-  }
-};
-
+    const fetchSavedPosts = async () => {
+      try {
+        const token = await getToken();
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/saved/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log("Response:", res.data); // Add this line to see the shape
+        setSavedPosts(
+          Array.isArray(res.data) ? res.data : res.data.saved || []
+        );
+      } catch (err) {
+        console.error("Error fetching saved posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchSavedPosts();
+    // eslint-disable-next-line
   }, []);
 
   if (loading) {
-    return <div className="text-center py-10 text-lg">Loading saved posts...</div>;
+    return (
+      <div className="text-center py-10 text-lg">Loading saved posts...</div>
+    );
   }
-  console.log(savedPosts)
+  console.log(savedPosts);
   if (savedPosts.length === 0) {
     return (
       <div className="text-center py-10 text-gray-500 text-lg">

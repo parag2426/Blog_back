@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import Search from './Search';
 
 const categories = [
   { name: 'All Posts', query: '' },
@@ -14,20 +13,18 @@ const MainCategories = () => {
   const currentCat = new URLSearchParams(search).get('cat') || '';
 
   return (
-    <div className="bg-white rounded-2xl shadow-md px-4 py-4 md:px-8 md:py-5 flex flex-col md:flex-row items-center justify-between gap-4">
-      
-      {/* Scrollable Category Buttons */}
-      <div className="flex flex-wrap md:flex-nowrap gap-3 w-full md:w-auto overflow-x-auto no-scrollbar">
+    <div className="bg-white rounded-2xl shadow-md px-4 py-3 md:px-8 md:py-4">
+      <div className="flex gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
         {categories.map(({ name, query }) => {
           const isActive = currentCat === query || (query === '' && pathname === '/posts');
           return (
             <Link
               key={query || 'all'}
               to={query ? `/posts?cat=${query}` : '/posts'}
-              className={`whitespace-nowrap px-4 py-2 rounded-full font-medium text-sm transition-colors duration-200 ${
+              className={`snap-start whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border transition duration-200 ${
                 isActive
-                  ? 'bg-blue-800 text-white hover:bg-blue-900'
-                  : 'text-blue-800 hover:bg-blue-100'
+                  ? 'bg-blue-700 text-white border-blue-700 shadow-sm'
+                  : 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50'
               }`}
             >
               {name}
@@ -35,16 +32,12 @@ const MainCategories = () => {
           );
         })}
       </div>
-
-      {/* Search Field */}
-      <div className="w-full md:w-auto mt-2 md:mt-0">
-        <Search />
-      </div>
     </div>
   );
 };
 
 export default MainCategories;
+
 
 
 

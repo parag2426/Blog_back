@@ -189,7 +189,7 @@ const PostMenuAction = ({ post }) => {
               }
             />
           </svg>
-          <span>Feature</span>
+          
         </div>
       )}
 
@@ -205,7 +205,7 @@ const PostMenuAction = ({ post }) => {
             width="20px"
             height="20px"
           >
-            <path d="..." />
+              <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5a1 1 0 0 1-1 .5H7a1 1 0 0 1-1-.5L4 9zm5 2v8h2v-8H9zm4 0v8h2v-8h-2z" />
           </svg>
           <span>Delete this Post</span>
           {deleteMutation.isPending && (

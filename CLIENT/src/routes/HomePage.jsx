@@ -7,63 +7,42 @@ import FeaturedPosts from '../components/Featuredpost';
 const HomePage = () => {
   return (
     <motion.div
-      className="mt-4 flex flex-col gap-8 px-4 "
+      className="mt-4 flex flex-col gap-10 px-4 sm:px-6 lg:px-8"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Breadcrumb
-      <motion.div
-        className="flex gap-2 text-gray-600"
-        initial={{ x: -50, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ delay: 0.1, duration: 0.4 }}
-      >
-        <Link to="/">Home</Link>
-        <span>*</span>
-        <span className="text-blue-800">Blogs and Articles</span>
-      </motion.div> */}
 
-      
-       <motion.h2
-        className="text-2xl font-semibold text-gray-800 mb-2"
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        Blogs and Articles
-      </motion.h2>
-
-      {/* Introduction Section */}
+      {/* ========== INTRODUCTION SECTION ========== */}
       <motion.div
-        className="flex flex-col md:flex-row items-center justify-between gap-8"
+        className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 text-center md:text-left"
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.6 }}
       >
-        {/* Text Content */}
+        {/* ==== TEXT CONTENT ==== */}
         <motion.div
-          className="max-w-xl"
-          initial={{ scale: 0.9, opacity: 0 }}
+          className="w-full md:w-1/2 max-w-xl"
+          initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          <h1 className="text-gray-800 text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 leading-snug md:leading-tight">
             For the Words That Matter
           </h1>
-          <p className="mt-6 text-md md:text-xl text-gray-700">
+          <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600">
             If words have power, then imagine what a prayer could hold. <br />
             In silence, it speaks louder than a thousand voices.
           </p>
         </motion.div>
 
-        {/* Rotating Circular Button */}
-        <Link to="/write" className=" relative w-[200px] h-[200px] block shrink-0">
+        {/* ==== CIRCULAR WRITE BUTTON ==== */}
+        <Link to="/write" className="relative w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] shrink-0">
           <svg
             viewBox="0 0 200 200"
-            width="200"
-            height="200"
-            className="text-lg tracking-widest animate-spin animationButton"
+            width="100%"
+            height="100%"
+            className="text-sm tracking-wide animate-spin animationButton"
           >
             <path
               id="circlePath"
@@ -80,13 +59,13 @@ const HomePage = () => {
             </text>
           </svg>
 
-          <button className="absolute top-0 left-0 right-0 bottom-0 m-auto w-20 h-20 bg-blue-800 rounded-full flex items-center justify-center text-white text-xl">
+          <button className="absolute inset-0 m-auto w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-blue-800 rounded-full flex items-center justify-center text-white text-xl">
             ✍️
           </button>
         </Link>
       </motion.div>
 
-      {/* Main Categories */}
+      {/* ========== MAIN CATEGORIES ========== */}
       <motion.div
         initial={{ x: -30, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -95,7 +74,7 @@ const HomePage = () => {
         <MainCategories />
       </motion.div>
 
-      {/* Featured Posts */}
+      {/* ========== FEATURED POSTS ========== */}
       <motion.div
         initial={{ x: 30, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
@@ -104,8 +83,7 @@ const HomePage = () => {
         <FeaturedPosts />
       </motion.div>
 
-      {/* Post List */}
-     
+      {/* ========== POST LIST ========== */}
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -118,4 +96,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-

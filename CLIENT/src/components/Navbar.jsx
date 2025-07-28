@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SignedIn, SignedOut, useAuth, UserButton } from '@clerk/clerk-react';
-import { FiMenu, FiX } from 'react-icons/fi'; // icons for menu
+import { FiMenu, FiX } from 'react-icons/fi';
+import Search from './Search';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,24 +10,31 @@ const Navbar = () => {
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.png" alt="Logo" className="w-10 h-10 drop-shadow-md" />
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
-            Bloggify
-          </span>
-        </Link>
+        {/* Left: Logo */}
+        <div className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="Logo" className="w-10 h-10 drop-shadow-md" />
+            <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+              Bloggify
+            </span>
+          </Link>
+        </div>
 
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex gap-6 items-center font-medium text-gray-800 text-lg">
-          <Link to="/" className="hover:text-blue-700 transition">Home</Link>
-          <Link to="/Write" className="hover:text-blue-700 transition">Write</Link>
-          <Link to="/saved" className="hover:text-blue-700 transition">Saved</Link>
-          <Link to="/about" className="hover:text-blue-700 transition">About</Link>
+        {/* Center: Search (hidden on very small screens) */}
+        <div className="hidden md:block md:flex-1 md:mx-6">
+          <Search />
+        </div>
+
+        {/* Right: Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-6 font-medium text-gray-700 text-base">
+          <Link to="/" className="hover:text-indigo-600 transition">Home</Link>
+          <Link to="/write" className="hover:text-indigo-600 transition">Write</Link>
+          <Link to="/saved" className="hover:text-indigo-600 transition">Saved</Link>
+          <Link to="/about" className="hover:text-indigo-600 transition">About</Link>
 
           <SignedOut>
             <Link to="/login">
-              <button className="bg-gradient-to-r from-blue-700 to-indigo-700 hover:brightness-110 text-white py-1.5 px-5 rounded-full transition-all duration-200">
+              <button className="bg-gradient-to-r from-blue-600 to-indigo-700 hover:brightness-110 text-white py-1.5 px-5 rounded-full transition-all duration-200 shadow-sm">
                 Login 👋
               </button>
             </Link>
@@ -37,7 +45,7 @@ const Navbar = () => {
           </SignedIn>
         </nav>
 
-        {/* Mobile Menu Icon */}
+        {/* Mobile Menu Button */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden text-3xl text-gray-700 focus:outline-none"
@@ -46,25 +54,28 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile Menu Panel */}
+      {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="md:hidden px-6 pb-6 pt-4 bg-white shadow-md rounded-b-2xl">
-          <div className="flex flex-col gap-4 text-lg font-medium text-gray-800">
-            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">Home</Link>
-            <Link to="/trending" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">Trending</Link>
-            <Link to="/save" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">Saved</Link>
-            <Link to="/about" onClick={() => setMenuOpen(false)} className="hover:text-blue-700">About</Link>
+        <div className="md:hidden bg-white px-6 pt-4 pb-6 shadow-md rounded-b-2xl">
+          <Search /> {/* Add Search for mobile here */}
+          <div className="mt-4 flex flex-col gap-4 text-base font-medium text-gray-700">
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-indigo-600">Home</Link>
+            <Link to="/write" onClick={() => setMenuOpen(false)} className="hover:text-indigo-600">Write</Link>
+            <Link to="/saved" onClick={() => setMenuOpen(false)} className="hover:text-indigo-600">Saved</Link>
+            <Link to="/about" onClick={() => setMenuOpen(false)} className="hover:text-indigo-600">About</Link>
 
             <SignedOut>
               <Link to="/login">
-                <button className="mt-4 py-2 px-6 bg-gradient-to-r from-blue-700 to-indigo-700 text-white rounded-full shadow-md">
+                <button className="mt-4 py-2 px-6 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-full shadow-md hover:brightness-110 transition">
                   Login
                 </button>
               </Link>
             </SignedOut>
 
             <SignedIn>
-              <UserButton afterSignOutUrl="/" />
+              <div className="mt-2">
+                <UserButton afterSignOutUrl="/" />
+              </div>
             </SignedIn>
           </div>
         </div>
@@ -72,6 +83,6 @@ const Navbar = () => {
     </header>
   );
 };
-
 export default Navbar;
+
 

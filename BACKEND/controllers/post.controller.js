@@ -192,11 +192,12 @@ const imagekit = new ImageKit({
   privateKey: process.env.IK_PRIVATE_KEY,
 });
 
+
 // Auth endpoint for ImageKit frontend
 export const uploadAuth = async (req, res) => {
   try {
     const result = imagekit.getAuthenticationParameters();
-    res.send(result); // returns { signature, expire, token }
+    res.json(result); // returns { signature, expire, token }
   } catch (error) {
     console.error("❌ Error getting ImageKit auth:", error);
     res.status(500).json({ error: "Something went wrong with ImageKit authentication" });

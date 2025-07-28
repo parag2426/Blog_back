@@ -167,15 +167,18 @@ const Write = () => {
           </Upload>
         </div>
 
-        <div className="bg-white border border-blue-200 rounded-xl overflow-hidden">
-          <ReactQuill
-            value={value}
-            onChange={setValue}
-            theme="snow"
-            modules={modules}
-            className="h-[300px] text-blue-900"
-          />
-        </div>
+            <div className="bg-white border border-blue-200 rounded-xl overflow-hidden shadow-sm">
+      <ReactQuill
+        value={value}
+        onChange={setValue}
+        theme="snow"
+        modules={modules}
+        placeholder="Start writing your blog..."
+        className="text-blue-900"
+        
+      />
+    </div>
+
 
         <button
           type="submit"
