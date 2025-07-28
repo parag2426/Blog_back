@@ -7,12 +7,12 @@ import FeaturedPosts from '../components/Featuredpost';
 const HomePage = () => {
   return (
     <motion.div
-      className="mt-4 flex flex-col gap-8 px-4"
+      className="mt-4 flex flex-col gap-8 px-4 "
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Breadcrumb */}
+      {/* Breadcrumb
       <motion.div
         className="flex gap-2 text-gray-600"
         initial={{ x: -50, opacity: 0 }}
@@ -22,7 +22,17 @@ const HomePage = () => {
         <Link to="/">Home</Link>
         <span>*</span>
         <span className="text-blue-800">Blogs and Articles</span>
-      </motion.div>
+      </motion.div> */}
+
+      
+       <motion.h2
+        className="text-2xl font-semibold text-gray-800 mb-2"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        Blogs and Articles
+      </motion.h2>
 
       {/* Introduction Section */}
       <motion.div

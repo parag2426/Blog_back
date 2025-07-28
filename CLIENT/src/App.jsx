@@ -9,6 +9,7 @@ const App = () => {
       {/* INTRODUCTION */}
       {/* FEATURED POSTS */}
       {/* POST LIST */}
+      
     </div>
   );
 };
