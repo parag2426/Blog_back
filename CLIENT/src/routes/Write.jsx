@@ -46,6 +46,8 @@ const Write = () => {
     ],
     imageResize: {
       parchment: Quill.import('parchment'),
+      displaySize: true,
+      modules: ['Resize', 'DisplaySize'],
     },
   };
 
@@ -86,18 +88,20 @@ const Write = () => {
   };
 
   return (
-    <div className="min-h-screen px-4 py-10 bg-gradient-to-b from-white to-blue-50">
+    <div className="min-h-screen px-4 py-8 sm:px-6 bg-gradient-to-b from-white to-blue-50">
       <form
         onSubmit={handleSubmit}
-        className="max-w-5xl mx-auto bg-white rounded-2xl shadow-2xl p-10 space-y-10 border border-blue-100"
+        className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-10 space-y-8 border border-blue-100"
       >
-        <h1 className="text-4xl font-bold text-blue-900 text-center">📝 Create a New Blog</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-blue-900 text-center">
+          📝 Create a New Blog
+        </h1>
 
-        <div className="flex flex-col sm:flex-row items-center gap-6 bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6 shadow-sm w-full">
           <Upload type="image" setProgress={setProgress} setData={setCover}>
             <button
               type="button"
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 shadow-md"
+              className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 text-sm sm:text-base"
             >
               📷 Upload Cover Image
             </button>
@@ -107,27 +111,29 @@ const Write = () => {
             <img
               src={cover.url}
               alt="Cover"
-              className="w-32 h-32 object-cover rounded-xl border border-blue-300 shadow-md"
+              className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-lg border border-blue-300 shadow"
             />
           ) : (
-            <p className="text-blue-600 italic">No cover selected</p>
+            <p className="text-blue-600 text-sm italic">No cover selected</p>
           )}
         </div>
 
         <input
           type="text"
           name="title"
-          placeholder="✍️ Your awesome title here..."
-          className="w-full text-3xl font-semibold border-b border-blue-200 focus:outline-none focus:border-blue-500 pb-3 placeholder-gray-400"
+          placeholder="✍️ Title goes here..."
+          className="w-full text-2xl sm:text-3xl font-semibold border-b border-blue-200 focus:outline-none focus:border-blue-500 pb-2 placeholder-gray-400"
           required
         />
 
         <div>
-          <label className="block text-lg font-semibold text-blue-800 mb-2">📚 Category</label>
+          <label className="block text-base font-semibold text-blue-800 mb-1">
+            📚 Category
+          </label>
           <select
             name="category"
             defaultValue="general"
-            className="w-full border border-blue-200 rounded-lg px-4 py-3 text-blue-900"
+            className="w-full border border-blue-200 rounded-md px-3 py-2 text-blue-900 text-sm sm:text-base"
             required
           >
             <option value="general">General</option>
@@ -142,54 +148,60 @@ const Write = () => {
         <textarea
           name="desc"
           placeholder="📝 Brief summary of your blog post..."
-          className="w-full border border-blue-200 rounded-lg px-4 py-3 text-blue-900"
+          className="w-full border border-blue-200 rounded-md px-3 py-2 text-blue-900 text-sm sm:text-base"
           rows={4}
           required
         />
 
-        <div className="flex gap-4 flex-wrap">
-          <Upload type="image" setProgress={setProgress} setData={setImg}>
-            <button
-              type="button"
-              className="bg-purple-600 text-white px-4 py-2 rounded shadow hover:bg-purple-700"
-            >
-              🖼 Insert Image
-            </button>
-          </Upload>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 w-full">
 
-          <Upload type="video" setProgress={setProgress} setData={setVideo}>
-            <button
-              type="button"
-              className="bg-green-600 text-white px-4 py-2 rounded shadow hover:bg-green-700"
-            >
-              🎥 Embed Video
-            </button>
-          </Upload>
-        </div>
+        {/* Upload Image Button */}
+        <Upload type="image" setProgress={setProgress} setData={setImg}>
+          <button
+            type="button"
+            className="w-full sm:w-auto bg-purple-600 text-white px-4 py-2 rounded-md text-sm hover:bg-purple-700 transition-all duration-200 shadow"
+          >
+            🖼 Insert Image
+          </button>
+        </Upload>
 
-            <div className="bg-white border border-blue-200 rounded-xl overflow-hidden shadow-sm">
-      <ReactQuill
-        value={value}
-        onChange={setValue}
-        theme="snow"
-        modules={modules}
-        placeholder="Start writing your blog..."
-        className="text-blue-900"
-        
-      />
-    </div>
+        {/* Upload Video Button */}
+        <Upload type="video" setProgress={setProgress} setData={setVideo}>
+          <button
+            type="button"
+            className="w-full sm:w-auto bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition-all duration-200 shadow"
+          >
+            🎥 Embed Video
+          </button>
+        </Upload>
+
+      </div>
+
+
+        <div className="bg-white border border-blue-200 rounded-md shadow-sm overflow-hidden w-full px-3 py-2 sm:px-4 sm:py-3">
+        <ReactQuill
+          value={value}
+          onChange={setValue}
+          theme="snow"
+          modules={modules}
+          placeholder="Start writing your blog..."
+          className="text-blue-900 min-h-[200px] sm:min-h-[250px]"
+        />
+      </div>
 
 
         <button
           type="submit"
           disabled={mutation.isPending || (progress > 0 && progress < 100)}
-          className="bg-blue-800 text-white w-full py-3 rounded-lg font-bold hover:bg-blue-900 transition disabled:opacity-60"
+          className="bg-blue-800 text-white w-full py-3 rounded-md font-bold hover:bg-blue-900 transition disabled:opacity-60"
         >
           🚀 Publish Blog
         </button>
 
         {progress > 0 && progress < 100 && (
-          <p className="text-sm text-blue-500 mt-2 text-center">Uploading... {progress}%</p>
+          <p className="text-sm text-blue-500 mt-2 text-center">
+            Uploading... {progress}%
+          </p>
         )}
       </form>
     </div>

@@ -10,11 +10,12 @@ const truncateWords = (text = "", numWords = 5) => {
 const PostListItem = ({ post, index = 0 }) => {
   const category = post?.category || "General";
   const desc = truncateWords(post?.desc || "Read More...");
-  const title = post?.title || "Untitled Post";
+  const title = truncateWords(post?.title || "Untitled Post");
 
   return (
+    
     <motion.div
-      className="flex justify-between gap-4 mb-6 group cursor-pointer"
+      className="flex justify-between gap-4 mb-6 group cursor-pointer border border-gray-200 rounded-xl shadow-sm hover:shadow-m"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ 
@@ -30,21 +31,20 @@ const PostListItem = ({ post, index = 0 }) => {
     >
       {/* Clean Image Section */}
       <motion.div
-        className="w-1/3 overflow-hidden rounded-xl"
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-      >
-        <motion.img
-          src={post.img}
-          alt={title}
-          className="object-cover w-full aspect-video"
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          whileHover={{ scale: 1.1 }}
-        />
-      </motion.div>
-
+  className="w-full sm:w-1/2 md:w-1/3 aspect-video overflow-hidden rounded-2xl shadow-md mx-auto"
+  whileHover={{ scale: 1.02 }}
+  transition={{ duration: 0.4, ease: "easeOut" }}
+>
+  <motion.img
+    src={post.img || "https://via.placeholder.com/800x450.png?text=No+Image"}
+    alt={title}
+    className="object-cover w-full h-full"
+    initial={{ scale: 1.05 }}
+    animate={{ scale: 1 }}
+    whileHover={{ scale: 1.08 }}
+    transition={{ duration: 0.8, ease: "easeOut" }}
+  />
+</motion.div>
       {/* Animated Content */}
       <motion.div 
         className="w-2/3"
@@ -56,53 +56,53 @@ const PostListItem = ({ post, index = 0 }) => {
           ease: "easeOut" 
         }}
       >
-        {/* Category and Date */}
-        <motion.div 
-          className="flex items-center gap-4 text-sm lg:text-base mb-2"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            duration: 0.5, 
-            delay: (index * 0.1) + 0.3,
-            ease: "easeOut" 
-          }}
-        >
-          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-            <Link
-              to={`/posts?cat=${category}`}
-              className="text-blue-800 hover:text-blue-900 transition-colors duration-300 relative"
-            >
-              <motion.span
-                className="relative z-10"
-                whileHover={{ 
-                  textShadow: "0 0 8px rgba(59, 130, 246, 0.5)" 
-                }}
-              >
-                {category}
-              </motion.span>
-              <motion.div
-                className="absolute inset-0 bg-blue-100 rounded-lg -z-10"
-                initial={{ scaleX: 0 }}
-                whileHover={{ scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-                style={{ originX: 0 }}
-              />
-            </Link>
-          </motion.div>
-          
-          <motion.span 
-            className="text-gray-500"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ 
-              duration: 0.4, 
-              delay: (index * 0.1) + 0.4 
-            }}
-          >
-            {format(post.createdAt)}
-          </motion.span>
-        </motion.div>
+       {/* Category and Date */}
+{/* Category and Date */}
+<motion.div 
+  className="flex items-center gap-1 text-[10px] text-gray-500 mb-1 whitespace-nowrap"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ 
+    duration: 0.4, 
+    delay: (index * 0.1) + 0.3,
+    ease: "easeOut" 
+  }}
+>
+  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+    <Link
+      to={`/posts?cat=${category}`}
+      className="text-blue-700 hover:text-blue-900 transition-colors duration-300 relative"
+    >
+      <motion.span
+        className="relative z-10"
+        whileHover={{ 
+          textShadow: "0 0 6px rgba(59, 130, 246, 0.4)" 
+        }}
+      >
+        {category}
+      </motion.span>
+      <motion.div
+        className="absolute inset-0 bg-blue-100 rounded-sm -z-10"
+        initial={{ scaleX: 0 }}
+        whileHover={{ scaleX: 1 }}
+        transition={{ duration: 0.25 }}
+        style={{ originX: 0 }}
+      />
+    </Link>
+  </motion.div>
 
+  <motion.span 
+    className="text-gray-400"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ 
+      duration: 0.3, 
+      delay: (index * 0.1) + 0.4 
+    }}
+  >
+    • {format(post.createdAt)}
+  </motion.span>
+</motion.div>
         {/* Title */}
         <motion.div
           whileHover={{ x: 5 }}
@@ -161,3 +161,8 @@ const PostListItem = ({ post, index = 0 }) => {
 };
 
 export default PostListItem;
+
+
+
+// let it same 
+// yep let it 

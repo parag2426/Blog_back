@@ -175,7 +175,7 @@ const PostMenuAction = ({ post }) => {
             height="20px"
           >
             <path
-              d="M24 2L29.39 16.26L44 18.18L33 29.24L35.82 44L24 37L12.18 44L15 29.24L4 18.18L18.61 16.26L24 2Z"
+              d="M19 6L18.5 19.5C18.5 20.3 17.8 21 17 21H7C6.2 21 5.5 20.3 5.5 19.5L5 6"
               stroke="black"
               strokeWidth="2"
               fill={

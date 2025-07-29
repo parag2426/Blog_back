@@ -58,7 +58,7 @@ const PostList = () => {
   const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
 
   return (
-    <div className="min-h-screen overflow-auto">
+    <div className="min-h-screen overflow-auto ">
       {/* ✅ 6. Infinite Scroll component handles loading more posts */}
       <InfiniteScroll
         dataLength={allPosts.length}

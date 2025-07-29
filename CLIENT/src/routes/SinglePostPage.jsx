@@ -118,7 +118,7 @@ const SinglePostPage = () => {
           </ul>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar
         <div className="bg-white px-4 py-3 rounded-full shadow-md flex items-center gap-2">
           <FiSearch className="text-gray-400 text-xl" />
           <input
@@ -126,7 +126,7 @@ const SinglePostPage = () => {
             placeholder="Search a post..."
             className="w-full bg-transparent text-sm text-gray-700 outline-none"
           />
-        </div>
+        </div> */}
       </aside>
       {/* Comments */}
       <div className="pt-16 mt-20 border-t border-gray-200">
