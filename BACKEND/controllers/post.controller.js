@@ -203,3 +203,33 @@ export const uploadAuth = async (req, res) => {
     res.status(500).json({ error: "Something went wrong with ImageKit authentication" });
   }
 };
+
+
+export const toggleLikePost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.user._id; // Provided by requireAuth middleware
+
+    const post = await Post.findById(postId);
+    if (!post) return res.status(404).json({ message: 'Post not found' });
+
+    const alreadyLiked = post.likes.includes(userId);
+
+    if (alreadyLiked) {
+      post.likes.pull(userId); // Unlike
+    } else {
+      post.likes.push(userId); // Like
+    }
+
+    await post.save();
+
+    return res.status(200).json({ 
+      success: true,
+      liked: !alreadyLiked,
+      totalLikes: post.likes.length,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Something went wrong' });
+  }
+};

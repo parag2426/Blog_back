@@ -39,6 +39,7 @@ const postSchema = new Schema({
         type: Number,
         default: 0, // Default visit count is 0
     },
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 }, 
 { timestamps: true });
 

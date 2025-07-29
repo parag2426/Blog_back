@@ -27,9 +27,10 @@ const HomePage = () => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-800 leading-snug md:leading-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-500 via-yellow-500 to-blue-500 bg-clip-text text-transparent leading-snug md:leading-tight drop-shadow-md">
             For the Words That Matter
           </h1>
+
           <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600">
             If words have power, then imagine what a prayer could hold. <br />
             In silence, it speaks louder than a thousand voices.

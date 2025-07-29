@@ -1,6 +1,6 @@
 import express from 'express';
-import { getPosts , getPost , createPost , deletePost , uploadAuth} from '../controllers/post.controller.js';
-import { authenticateUser } from "../middlewares/auth.js";
+import { getPosts , getPost , createPost , deletePost , uploadAuth , toggleLikePost} from '../controllers/post.controller.js';
+import { authenticateUser , requireAuth } from "../middlewares/auth.js";
 
 const router = express.Router();
 
@@ -19,6 +19,9 @@ router.get('/:slug',getPost );
 router.delete("/:id" ,deletePost )
 
 router.post("/", authenticateUser, createPost);
+
+// Toggle Like
+router.post('/like/:postId', authenticateUser, toggleLikePost);
 
 
 
