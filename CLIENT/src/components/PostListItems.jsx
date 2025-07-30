@@ -1,7 +1,11 @@
-
 // import { Link } from "react-router-dom";
 // import { format } from "timeago.js";
 // import { motion } from "framer-motion";
+// import { Heart } from "lucide-react";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { useMutation } from "@tanstack/react-query";
+// import { useAuth, useUser } from "@clerk/clerk-react";
 
 // // Utility to truncate description
 // const truncateLetters = (text = "", numLetters = 25) => {
@@ -13,6 +17,60 @@
 //   const category = post?.category || "General";
 //   const desc = truncateLetters(post?.desc || "Read More...");
 //   const title = truncateLetters(post?.title || "Untitled Post");
+
+//   const { getToken } = useAuth();
+//   const { user } = useUser();
+
+//   const [liked, setLiked] = useState(false);
+//   const [likes, setLikes] = useState(post.likes?.length || 0);
+
+//   // Check if the current user has already liked the post
+//   useEffect(() => {
+//     if (user?.id && post.likes?.includes(user.id)) {
+//       setLiked(true);
+//     }
+//   }, [post.likes, user?.id]);
+
+//   const likeMutation = useMutation({
+//     mutationFn: async () => {
+//       if (!user || !user.id) {
+//         console.log("User is not logged in");
+//         return;
+//       }
+
+//       const token = await getToken();
+
+//       if (!token) {
+//         console.log("No token found from Clerk");
+//         return;
+//       }
+
+//       const res = await axios.post(
+//         `${import.meta.env.VITE_API_URL}/posts/like/${post._id}`,
+//         {},
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+
+//       return res.data; // updated likes array
+//     },
+//     onSuccess: (updatedLikes) => {
+//       const userId = user?.id;
+//       const hasLiked = updatedLikes.includes(userId);
+//       setLiked(hasLiked);
+//       setLikes(updatedLikes.length);
+//     },
+//     onError: (error) => {
+//       console.error("Like error:", error.response?.data || error.message);
+//     },
+//   });
+
+//   const handleLike = () => {
+//     likeMutation.mutate();
+//   };
 
 //   return (
 //     <motion.div
@@ -30,7 +88,7 @@
 //       }}
 //       whileTap={{ scale: 0.98 }}
 //     >
-//       {/* Image Section with Hovered Category */}
+//       {/* Image Section */}
 //       <motion.div
 //         className="relative w-[45%] md:w-[40%] lg:w-[35%] aspect-video overflow-hidden rounded-2xl shadow-md"
 //         whileHover={{ scale: 1.02 }}
@@ -46,7 +104,7 @@
 //           transition={{ duration: 0.8, ease: "easeOut" }}
 //         />
 
-//         {/* Category overlay on hover */}
+//         {/* Category Tag */}
 //         <motion.div
 //           className="absolute bottom-2 left-2 px-2 py-1 bg-white/80 backdrop-blur-md rounded-md text-[11px] text-blue-700 font-semibold transition-all"
 //           initial={{ opacity: 0, y: 10 }}
@@ -120,9 +178,37 @@
 //           {desc}
 //         </motion.p>
 
-//         {/* Bottom Row with Date and Underline */}
+//         {/* Like Button
+//         <motion.button
+//           onClick={handleLike}
+//           whileTap={{ scale: 0.9 }}
+//           className="flex items-center gap-1 mt-3 w-fit text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
+//         >
+//           <Heart
+//             size={20}
+//             className={`transition-all duration-200 ${
+//               liked ? "fill-red-500 text-red-500" : "text-gray-400"
+//             }`}
+//           />
+//           {likes}
+//         </motion.button> */}
+
+//         {/* Bottom Row */}
 //         <div className="flex justify-between items-center mt-4">
-//           {/* Gradient Underline */}
+//           {/* Like Button */}
+//         <motion.button
+//           onClick={handleLike}
+//           whileTap={{ scale: 0.9 }}
+//           className="flex items-center gap-1 mt-3 w-fit text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
+//         >
+//           <Heart
+//             size={20}
+//             className={`transition-all duration-200 ${
+//               liked ? "fill-red-500 text-red-500" : "text-gray-400"
+//             }`}
+//           />
+//           {likes}
+//         </motion.button>
 //           <motion.div
 //             className="h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 w-1/2"
 //             initial={{ scaleX: 0, opacity: 0 }}
@@ -130,8 +216,6 @@
 //             transition={{ duration: 0.4, ease: "easeOut" }}
 //             style={{ originX: 0 }}
 //           />
-
-//           {/* Date on the right */}
 //           <motion.span
 //             className="text-[11px] text-gray-400"
 //             initial={{ opacity: 0 }}
@@ -150,6 +234,12 @@
 // };
 
 // export default PostListItem;
+
+
+
+
+
+
 
 
 
@@ -177,11 +267,12 @@ const PostListItem = ({ post, index = 0 }) => {
   const desc = truncateLetters(post?.desc || "Read More...");
   const title = truncateLetters(post?.title || "Untitled Post");
 
-  const { getToken } = useAuth();
+  const { getToken, isSignedIn } = useAuth();
   const { user } = useUser();
 
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(post.likes?.length || 0);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Check if the current user has already liked the post
   useEffect(() => {
@@ -192,19 +283,17 @@ const PostListItem = ({ post, index = 0 }) => {
 
   const likeMutation = useMutation({
     mutationFn: async () => {
-      if (!user || !user.id) {
-        console.log("User is not logged in");
-        return;
+      // Check authentication first
+      if (!isSignedIn || !user?.id) {
+        throw new Error("Please sign in to like posts");
       }
 
       const token = await getToken();
-
       if (!token) {
-        console.log("No token found from Clerk");
-        return;
+        throw new Error("Authentication failed");
       }
 
-      const res = await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/posts/like/${post._id}`,
         {},
         {
@@ -214,20 +303,72 @@ const PostListItem = ({ post, index = 0 }) => {
         }
       );
 
-      return res.data; // updated likes array
+      return response.data;
     },
-    onSuccess: (updatedLikes) => {
-      const userId = user?.id;
-      const hasLiked = updatedLikes.includes(userId);
-      setLiked(hasLiked);
-      setLikes(updatedLikes.length);
+    onMutate: async () => {
+      // Optimistic update
+      setIsProcessing(true);
+      const wasLiked = liked;
+      const previousLikes = likes;
+      
+      // Update UI immediately
+      setLiked(!wasLiked);
+      setLikes(wasLiked ? likes - 1 : likes + 1);
+      
+      // Return context for rollback if needed
+      return { wasLiked, previousLikes };
     },
-    onError: (error) => {
-      console.error("Like error:", error.response?.data || error.message);
+    onSuccess: (data) => {
+      // Update with actual server data
+      if (data && Array.isArray(data.likes)) {
+        const userId = user?.id;
+        const hasLiked = data.likes.includes(userId);
+        setLiked(hasLiked);
+        setLikes(data.likes.length);
+      } else if (data && typeof data.likesCount === 'number') {
+        // Handle different response formats
+        setLikes(data.likesCount);
+        setLiked(data.userLiked);
+      }
+      setIsProcessing(false);
+    },
+    onError: (error, variables, context) => {
+      // Rollback optimistic update
+      if (context) {
+        setLiked(context.wasLiked);
+        setLikes(context.previousLikes);
+      }
+      
+      setIsProcessing(false);
+      
+      // Show user-friendly error messages
+      let errorMessage = "Failed to update like";
+      if (error.message.includes("sign in")) {
+        errorMessage = "Please sign in to like posts";
+      } else if (error.response?.status === 401) {
+        errorMessage = "Please sign in to continue";
+      } else if (error.response?.status === 404) {
+        errorMessage = "Post not found";
+      }
+      
+      console.error("Like error:", error);
+      // You might want to show a toast notification here
+      alert(errorMessage); // Replace with your preferred notification system
     },
   });
 
   const handleLike = () => {
+    // Prevent multiple rapid clicks
+    if (isProcessing || likeMutation.isLoading) {
+      return;
+    }
+
+    // Check if user is signed in
+    if (!isSignedIn) {
+      alert("Please sign in to like posts");
+      return;
+    }
+
     likeMutation.mutate();
   };
 
@@ -337,23 +478,28 @@ const PostListItem = ({ post, index = 0 }) => {
           {desc}
         </motion.p>
 
-        {/* Like Button */}
-        <motion.button
-          onClick={handleLike}
-          whileTap={{ scale: 0.9 }}
-          className="flex items-center gap-1 mt-3 w-fit text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
-        >
-          <Heart
-            size={20}
-            className={`transition-all duration-200 ${
-              liked ? "fill-red-500 text-red-500" : "text-gray-400"
-            }`}
-          />
-          {likes}
-        </motion.button>
-
         {/* Bottom Row */}
         <div className="flex justify-between items-center mt-4">
+          {/* Like Button */}
+          <motion.button
+            onClick={handleLike}
+            disabled={isProcessing || likeMutation.isLoading}
+            whileTap={{ scale: 0.9 }}
+            className={`flex items-center gap-1 text-sm transition-colors duration-200 ${
+              isProcessing || likeMutation.isLoading
+                ? "cursor-not-allowed opacity-50"
+                : "cursor-pointer hover:text-red-500"
+            } ${liked ? "text-red-500" : "text-gray-600"}`}
+          >
+            <Heart
+              size={20}
+              className={`transition-all duration-200 ${
+                liked ? "fill-red-500 text-red-500" : "text-gray-400"
+              } ${isProcessing ? "animate-pulse" : ""}`}
+            />
+            <span className="select-none">{likes}</span>
+          </motion.button>
+
           <motion.div
             className="h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 w-1/2"
             initial={{ scaleX: 0, opacity: 0 }}
@@ -361,6 +507,7 @@ const PostListItem = ({ post, index = 0 }) => {
             transition={{ duration: 0.4, ease: "easeOut" }}
             style={{ originX: 0 }}
           />
+
           <motion.span
             className="text-[11px] text-gray-400"
             initial={{ opacity: 0 }}

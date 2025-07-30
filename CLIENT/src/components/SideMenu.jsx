@@ -49,10 +49,10 @@ const SideMenu = () => {
             type="radio"
             name="sort"
             onChange={handleFilterChange}
-            value="Trending"
+            value="oldest"
             className="appearance-none w-4 h-4 border-[1.5px] bg-white border-blue-800 cursor-pointer rounded-sm checked:bg-blue-800"
           />
-          Trending
+          Oldest
         </label>
       </div>
 

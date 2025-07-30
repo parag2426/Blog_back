@@ -27,11 +27,11 @@ const HomePage = () => {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-500 via-yellow-500 to-blue-500 bg-clip-text text-transparent leading-snug md:leading-tight drop-shadow-md">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-extrabold bg-gradient-to-r from-blue-600 via-yellow-400 to-blue-600 bg-clip-text text-transparent leading-snug md:leading-tight drop-shadow-md">
             For the Words That Matter
           </h1>
 
-          <p className="mt-4 text-sm sm:text-base md:text-lg text-gray-600">
+          <p className="hidden sm:block mt-4 text-sm sm:text-base md:text-lg text-gray-600">
             If words have power, then imagine what a prayer could hold. <br />
             In silence, it speaks louder than a thousand voices.
           </p>
@@ -52,10 +52,10 @@ const HomePage = () => {
             />
             <text>
               <textPath href="#circlePath" startOffset="0%">
-                • Write your story •
+                •--- Write your story ---•
               </textPath>
               <textPath href="#circlePath" startOffset="50%">
-                Share your idea
+               •--- Share your idea ---•
               </textPath>
             </text>
           </svg>

@@ -13,11 +13,6 @@ const commentSchema = new Schema({
         ref: 'Post', // Reference to the User model
         required: true,
     }, 
-     parentId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Comment',
-      default: null, // If it's a top-level comment, no parent
-    },
 
     desc:{
         type: String ,

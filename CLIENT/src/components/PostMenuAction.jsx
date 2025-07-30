@@ -1,7 +1,7 @@
 import { useUser, useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify"; // ✅ Added toast import
 
@@ -61,19 +61,32 @@ const PostMenuAction = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedPosts"] });
-      
-      toast.success(" Post saved successfully!", {
+      if (!isSaved) {
+  toast.success(
+    <div className="text-gray-800 text-base">
+      Post saved successfully!{" "}
+      <Link
+        to="/saved"
+        className="text-blue-600 underline font-semibold hover:text-blue-800"
+      >
+        View Saved Posts
+      </Link>
+    </div>,
+    {
       position: "top-center",
       autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
       draggable: true,
-      theme: "light", // Or "colored" depending on your design
-      toastClassName: "text-lg px-6 py-4 rounded-xl shadow-md font-semibold bg-white border border-gray-300",
-      bodyClassName: "text-gray-800 text-base",
-      icon: "💾", // optional, you already have emoji in text — remove if duplicated
-    });
+      theme: "light",
+      toastClassName:
+        "text-lg px-6 py-4 rounded-xl shadow-md font-semibold bg-white border border-gray-300",
+      icon: "💾",
+    }
+  );
+}
+
 
 
     },
@@ -175,7 +188,7 @@ const PostMenuAction = ({ post }) => {
             height="20px"
           >
             <path
-              d="M19 6L18.5 19.5C18.5 20.3 17.8 21 17 21H7C6.2 21 5.5 20.3 5.5 19.5L5 6"
+              d="M24 2L29.39 16.26L44 18.18L33 29.24L35.82 44L24 37L12.18 44L15 29.24L4 18.18L18.61 16.26L24 2Z"
               stroke="black"
               strokeWidth="2"
               fill={
@@ -193,28 +206,39 @@ const PostMenuAction = ({ post }) => {
         </div>
       )}
 
-      {(user && (isPostOwner || isAdmin)) && (
-        <div
-          className="flex items-center gap-2 py-2 text-sm cursor-pointer"
-          onClick={handleDelete}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 50 50"
-            fill="red"
-            width="20px"
-            height="20px"
-          >
-              <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5a1 1 0 0 1-1 .5H7a1 1 0 0 1-1-.5L4 9zm5 2v8h2v-8H9zm4 0v8h2v-8h-2z" />
-          </svg>
-          <span>Delete this Post</span>
-          {deleteMutation.isPending && (
-            <span className="text-xs">(deleting...)</span>
-          )}
-        </div>
-      )}
+      {user && (isPostOwner || isAdmin) && (
+  <div
+    className="flex items-center gap-2 py-2 text-sm cursor-pointer hover:text-red-600 transition"
+    onClick={handleDelete}
+  >
+    {/* Trash Icon SVG */}
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      width="20px"
+      height="20px"
+      fill="none"
+      stroke="red"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <line x1="10" y1="11" x2="10" y2="17" />
+      <line x1="14" y1="11" x2="14" y2="17" />
+    </svg>
+
+    {/* Text */}
+    <span>Delete this Post</span>
+
+    {/* Optional Loading Text */}
+    {deleteMutation.isPending && (
+      <span className="text-xs text-red-400">(deleting...)</span>
+    )}
+  </div>
+)}
     </div>
   );
 };
-
 export default PostMenuAction;
