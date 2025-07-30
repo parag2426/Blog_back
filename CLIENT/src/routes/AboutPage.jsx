@@ -6,23 +6,13 @@ const AboutPage = () => {
   const navigate = useNavigate();
 
   const handleStartClick = () => {
-    toast.success("Redirecting you to the Home Page!", {
-      position: "top-right",
-      autoClose: 1200,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "colored",
-    });
-
     setTimeout(() => {
       navigate("/");
     }, 1200);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between">
+    <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col justify-between mt-5">
       {/* === Hero Section === */}
       <div
         className="relative bg-cover bg-center h-[70vh] flex items-center justify-center text-white"
@@ -99,6 +89,24 @@ const AboutPage = () => {
           ))}
         </div>
       </section>
+
+      {/* === New Chapter: The Story Behind the Platform === */}
+      <motion.section
+        className="bg-gradient-to-br from-indigo-100 via-white to-indigo-200 py-24 px-6 md:px-32 text-center"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <h2 className="text-3xl md:text-4xl font-extrabold text-indigo-800 mb-6">
+          The Story Behind the Platform
+        </h2>
+        <p className="text-gray-700 text-md md:text-lg max-w-3xl mx-auto mb-6">
+          This platform began as a small side project—just a place to write and express. But as voices joined in, it became a living library of dreams, truths, and ideas. We realized it was never just about writing; it was about empowering creators to speak, be heard, and inspire.
+        </p>
+        <p className="text-gray-600 text-sm md:text-base max-w-xl mx-auto italic">
+          Everyone has a story. Some just need a space to tell it.
+        </p>
+      </motion.section>
 
       {/* === CTA Section === */}
       <motion.section 

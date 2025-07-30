@@ -1,11 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
 
 const categories = [
-  { name: 'All Posts', query: '' },
-  { name: 'Web Design', query: 'web-design' },
-  { name: 'Development', query: 'development' },
-  { name: 'AI', query: 'ai' },
-  { name: 'Fashion Design', query: 'fashion-design' },
+  { name: 'All', query: '' },
+  { name: 'web-design', query: 'Web-Designs' },
+  { name: 'Design', query: 'design' },
+  { name: 'AI & ML', query: 'ai' },
+  { name: 'Lifestyle', query: 'lifestyle' },
+  { name: 'Business', query: 'business' },
+  { name: 'Health', query: 'health' },
+  { name: 'Travel', query: 'travel' },
 ];
 
 const MainCategories = () => {
@@ -13,18 +16,18 @@ const MainCategories = () => {
   const currentCat = new URLSearchParams(search).get('cat') || '';
 
   return (
-    <div className="bg-white rounded-2xl shadow-md px-4 py-3 md:px-8 md:py-4">
-      <div className="flex gap-3 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
+    <div className="bg-slate-50/80 backdrop-blur-sm rounded-xl shadow-sm px-3 py-2.5 border border-slate-200/50">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
         {categories.map(({ name, query }) => {
           const isActive = currentCat === query || (query === '' && pathname === '/posts');
           return (
             <Link
               key={query || 'all'}
               to={query ? `/posts?cat=${query}` : '/posts'}
-              className={`snap-start whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border transition duration-200 ${
+              className={`snap-start whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                 isActive
-                  ? 'bg-blue-700 text-white border-blue-700 shadow-sm'
-                  : 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50'
+                  ? 'bg-blue-600 text-white shadow-sm scale-105'
+                  : 'bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-700 shadow-sm border border-slate-200/70'
               }`}
             >
               {name}
@@ -37,7 +40,3 @@ const MainCategories = () => {
 };
 
 export default MainCategories;
-
-
-
-

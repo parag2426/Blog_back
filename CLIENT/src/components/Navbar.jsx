@@ -9,20 +9,21 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full bg-white shadow-md sticky top-0 z-50 rounded-b-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 md:gap-y-0 rounded-full bg-white">
+    <header className=" mt-2 w-full bg-white shadow-md sticky top-0 z-50 rounded-b-2xl">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4 md:gap-y-0 rounded-2xl bg-white ">
         
-        {/* Left: Logo */}
-        <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+       {/* Left: Logo */}
+        <Link to="/" className="flex items-center gap-1 flex-shrink-0">
           <img
             src="/logo.png"
             alt="Logo"
-            className="w-12 h-12 object-cover drop-shadow-md rounded-full"
+            className="w-8 h-8 object-cover drop-shadow-md rounded-full"
           />
-          <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
+          <span className="text-lg font-bold bg-gradient-to-r from-blue-700 to-indigo-600 bg-clip-text text-transparent">
             Bloggify
           </span>
         </Link>
+
 
         {/* Center: Search (Hidden on mobile) */}
         <div className="hidden md:block flex-1 mx-4 lg:mx-10 min-w-0">
