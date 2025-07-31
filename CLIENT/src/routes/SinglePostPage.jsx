@@ -249,7 +249,7 @@ const SinglePostPage = () => {
             </Link>
             <span>• {format(data.createdAt)}</span>
           </div>
-
+a
           {/* Short Description */}
           {data.desc && (
             <div className="p-4 sm:p-6 text-base sm:text-lg text-slate-700 leading-relaxed text-center bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border border-slate-200">

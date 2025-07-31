@@ -8,7 +8,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuth, useUser } from "@clerk/clerk-react";
 import LikeButton from "./LikeButton"; // Adjust path based on your folder structure
 
-
 // Utility to truncate description
 const truncateLetters = (text = "", numLetters = 35) => {
   if (text.length <= numLetters) return text;
@@ -37,6 +36,7 @@ const PostListItem = ({ post, index = 0 }) => {
       }}
       whileTap={{ scale: 0.98 }}
     >
+
       {/* Image Section */}
       <motion.div
         className="relative w-[45%] md:w-[40%] lg:w-[35%] aspect-video overflow-hidden rounded-2xl shadow-md"
@@ -44,7 +44,9 @@ const PostListItem = ({ post, index = 0 }) => {
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         <motion.img
-          src={post.img || "https://via.placeholder.com/800x450.png?text=No+Image"}
+          src={
+            post.img || "https://via.placeholder.com/800x450.png?text=No+Image"
+          }
           alt={title}
           className="object-cover w-full h-full"
           initial={{ scale: 1.05 }}
@@ -129,12 +131,11 @@ const PostListItem = ({ post, index = 0 }) => {
 
         {/* Bottom Row */}
         <div className="flex justify-between items-center mt-4">
-                <LikeButton
-        postId={post._id}
-        initialLiked={post.likes?.includes(user?.id)}
-        initialLikes={post.likes?.length || 0}
-      />
-
+          <LikeButton
+            postId={post._id}
+            initialLiked={post.likes?.includes(user?.id)}
+            initialLikes={post.likes?.length || 0}
+          />
 
           <motion.div
             className="h-0.5 bg-gradient-to-r from-blue-500 to-purple-500 w-1/2"

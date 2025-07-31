@@ -4,6 +4,7 @@ export const authenticateUser = async (req, res, next) => {
   try {
     const clerkUserId = req.auth?.userId;
 
+
     if (!clerkUserId) {
       return res.status(401).json({ error: "Unauthorized" });
     }

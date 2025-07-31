@@ -89,7 +89,7 @@ const HomePage = () => {
     initial={{ x: -20, opacity: 0 }}
     animate={{ x: 0, opacity: 1 }}
     transition={{ delay: 0.5, duration: 0.5 }}
-    className="mt-1 sm:mt-2"
+    className="mt-1 sm:mt-2 hidden sm:block"
   >
     <MainCategories />
   </motion.div>

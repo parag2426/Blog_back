@@ -1,22 +1,21 @@
-import ImageKit from 'imagekit';
-import Post from '../models/post.model.js';
+import ImageKit from "imagekit";
+import Post from "../models/post.model.js";
+import User from "../models/user.models.js";
 
 // Get all posts with pagination
 export const getPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
 
+  const query = {};
 
-  const query = {} ; 
+  const cat = req.query.cat;
+  const author = req.query.author;
+  const searchQuery = req.query.search;
+  const sortQuery = req.query.sort;
+  const featured = req.query.featured;
 
-  const cat = req.query.cat ; 
-  const author = req.query.author ; 
-  const searchQuery = req.query.search ; 
-  const sortQuery = req.query.sort ; 
-  const featured = req.query.featured ; 
- 
-
-if (cat) {
+  if (cat) {
     query.category = cat;
   }
 
@@ -75,28 +74,30 @@ if (cat) {
     res.status(200).json({ posts, hasMore });
   } catch (error) {
     console.error("❌ Error fetching posts:", error);
-    res.status(500).json({ error: "Something went wrong while fetching posts" });
+    res
+      .status(500)
+      .json({ error: "Something went wrong while fetching posts" });
   }
 };
 
 // Get single post by slug
 export const getPost = async (req, res) => {
   try {
-    const post = await Post.findOne({ slug: req.params.slug }).populate("user", "username");
+    const post = await Post.findOne({ slug: req.params.slug }).populate(
+      "user",
+      "username"
+    );
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
     res.status(200).json(post);
   } catch (error) {
     console.error("❌ Error fetching post:", error);
-    res.status(500).json({ error: "Something went wrong while fetching the post" });
+    res
+      .status(500)
+      .json({ error: "Something went wrong while fetching the post" });
   }
 };
-
-
-
-
-
 
 // Create a new post
 export const createPost = async (req, res) => {
@@ -125,14 +126,16 @@ export const createPost = async (req, res) => {
 
     // ❌ Error Handling: Check if user is not present (unauthorized access)
     if (!mongoUser || !mongoUser._id) {
-      return res.status(401).json({ error: "Unauthorized: User not found while posting" });
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: User not found while posting" });
     }
 
     // ✅ Step 5: Create a new Post object
     const newPost = new Post({
-      ...req.body,     // Spread the rest of the request body into the Post (e.g., content, category, etc.)
-      slug,            // Unique slug we just generated
-      user: mongoUser._id,  // Attach the logged-in user's ID
+      ...req.body, // Spread the rest of the request body into the Post (e.g., content, category, etc.)
+      slug, // Unique slug we just generated
+      user: mongoUser._id, // Attach the logged-in user's ID
     });
 
     // 🪵 Log for debugging
@@ -143,33 +146,21 @@ export const createPost = async (req, res) => {
 
     // ✅ Step 7: Return the created post in response
     res.status(200).json(post);
-
   } catch (error) {
     // ❌ Catch and log any unexpected errors
     console.error("❌ Error creating post:", error.message);
     console.log("📝 Request body:", req.body);
-    res.status(500).json({ error: "Something went wrong while creating the post" });
+    res
+      .status(500)
+      .json({ error: "Something went wrong while creating the post" });
   }
 };
-
-
-
-
-
 
 // const role = req.auth.sessionClaims?metadata?.role ||"user"
 // if(role ==="admin")(
 //   await Post.findByIdAndDelete(req.params.id)
 //   res.status(200).json("Post has been deleted");
 // )
-
-
-
-
-
-
-
-
 
 // Delete post by ID
 export const deletePost = async (req, res) => {
@@ -181,7 +172,9 @@ export const deletePost = async (req, res) => {
     res.status(200).json("Post has been deleted");
   } catch (error) {
     console.error("❌ Error deleting post:", error);
-    res.status(500).json({ error: "Something went wrong while deleting the post" });
+    res
+      .status(500)
+      .json({ error: "Something went wrong while deleting the post" });
   }
 };
 
@@ -192,7 +185,6 @@ const imagekit = new ImageKit({
   privateKey: process.env.IK_PRIVATE_KEY,
 });
 
-
 // Auth endpoint for ImageKit frontend
 export const uploadAuth = async (req, res) => {
   try {
@@ -200,18 +192,25 @@ export const uploadAuth = async (req, res) => {
     res.json(result); // returns { signature, expire, token }
   } catch (error) {
     console.error("❌ Error getting ImageKit auth:", error);
-    res.status(500).json({ error: "Something went wrong with ImageKit authentication" });
+    res
+      .status(500)
+      .json({ error: "Something went wrong with ImageKit authentication" });
   }
 };
-
 
 export const toggleLikePost = async (req, res) => {
   try {
     const postId = req.params.postId;
-    const userId = req.user._id; // Provided by requireAuth middleware
+    // const userId = req.user._id; // Provided by requireAuth middleware
+    const userId = req.auth?.userId;
 
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ message: "User not authenticated for likes" });
+    }
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ message: 'Post not found' });
+    if (!post) return res.status(404).json({ message: "Post not found" });
 
     const alreadyLiked = post.likes.includes(userId);
 
@@ -223,13 +222,13 @@ export const toggleLikePost = async (req, res) => {
 
     await post.save();
 
-    return res.status(200).json({ 
+    return res.status(200).json({
       success: true,
       liked: !alreadyLiked,
       totalLikes: post.likes.length,
     });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Something went wrong' });
+    return res.status(500).json({ message: "Something went wrong" });
   }
 };

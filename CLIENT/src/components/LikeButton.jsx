@@ -6,6 +6,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
 
 const LikeButton = ({ postId, initialLiked, initialLikes }) => {
+
   const { getToken, isSignedIn } = useAuth();
   const { user } = useUser();
 
