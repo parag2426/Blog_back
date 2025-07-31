@@ -25,8 +25,7 @@ app.use(cors({
 
 app.use('/webhooks', webhookRoute);
 
-app.use(express.json()); // middleware to parse incoming JSON
-
+app.use(express.json({ limit: '5mb' })); // middleware to parse incoming JSON with 5MB limit
 
 app.use(ClerkExpressWithAuth());
 

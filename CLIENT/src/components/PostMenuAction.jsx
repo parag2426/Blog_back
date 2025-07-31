@@ -1,9 +1,300 @@
+// import { useUser, useAuth } from "@clerk/clerk-react";
+// import { useState } from "react";
+// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+// import axios from "axios";
+// import { Link, useNavigate } from "react-router-dom";
+// import { toast } from "react-toastify";
+// import LikeButton from "./LikeButton";
+// import {
+//   FaFacebookF,
+//   FaTwitter,
+//   FaWhatsapp,
+//   FaRegBookmark,
+//   FaBookmark,
+//   FaShareAlt,
+//   FaTrashAlt,
+//   FaStar,
+//   FaRegCommentDots,
+// } from "react-icons/fa";
+
+// const PostMenuAction = ({ post }) => {
+//   const { user, isLoaded } = useUser();
+//   const { getToken } = useAuth();
+//   const navigate = useNavigate();
+//   const queryClient = useQueryClient();
+
+//   const [showShareModal, setShowShareModal] = useState(false);
+//   const [copied, setCopied] = useState(false);
+//   const shareUrl = `${window.location.origin}/posts/${post.slug}`;
+
+//   const currentUsername =
+//     user?.username ||
+//     user?.publicMetadata?.username ||
+//     user?.primaryEmailAddress?.emailAddress;
+
+//   const isAdmin = user?.publicMetadata?.role === "admin";
+//   const isPostOwner = post?.user?.username === currentUsername;
+
+//   const { data: savedPosts = [] } = useQuery({
+//     queryKey: ["savedPosts"],
+//     queryFn: async () => {
+//       const token = await getToken();
+//       const res = await axios.get(
+//         `${import.meta.env.VITE_API_URL}/users/saved`,
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+//       return res.data;
+//     },
+//     enabled: !!user,
+//   });
+
+//   const isSaved = savedPosts.includes(post._id);
+
+//   const redirectIfNotAuth = () => {
+//     if (!user) {
+//       navigate("/sign-up");
+//       return true;
+//     }
+//     return false;
+//   };
+
+//   const deleteMutation = useMutation({
+//     mutationFn: async () => {
+//       const token = await getToken();
+//       return axios.delete(
+//         `${import.meta.env.VITE_API_URL}/posts/${post._id}`,
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+//     },
+//     onSuccess: () => navigate("/"),
+//   });
+
+//   const saveMutation = useMutation({
+//     mutationFn: async () => {
+//       const token = await getToken();
+//       return axios.patch(
+//         `${import.meta.env.VITE_API_URL}/users/save`,
+//         { postId: post._id },
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+//     },
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["savedPosts"] });
+//       toast.success(
+//         <div>
+//           Post saved!{" "}
+//           <Link
+//             to="/saved"
+//             className="text-blue-600 underline font-semibold hover:text-blue-800"
+//           >
+//             View Saved
+//           </Link>
+//         </div>
+//       );
+//     },
+//   });
+
+//   const featureMutation = useMutation({
+//     mutationFn: async () => {
+//       const token = await getToken();
+//       return axios.patch(
+//         `${import.meta.env.VITE_API_URL}/posts/feature`,
+//         { postId: post._id },
+//         {
+//           headers: { Authorization: `Bearer ${token}` },
+//         }
+//       );
+//     },
+//     onSuccess: () =>
+//       queryClient.invalidateQueries({ queryKey: ["post", post.slug] }),
+//   });
+
+//   const handleCopyLink = async () => {
+//     try {
+//       await navigator.clipboard.writeText(shareUrl);
+//       setCopied(true);
+//       setTimeout(() => setCopied(false), 2000);
+//     } catch {
+//       toast.error("Failed to copy link.");
+//     }
+//   };
+
+//   const handleCommentClick = () => {
+//     if (redirectIfNotAuth()) return;
+//     const el = document.getElementById("comments");
+//     if (el) el.scrollIntoView({ behavior: "smooth" });
+//   };
+
+//   if (!isLoaded) return null;
+
+//   return (
+//     <div>
+//       <h1 className="mt-8 mb-4 text-sm font-semibold text-gray-700">
+//         Actions
+//       </h1>
+
+//       <div className="flex flex-wrap gap-5 text-sm items-center text-gray-600">
+//         {/* Save */}
+//         <button
+//           onClick={() => {
+//             if (!redirectIfNotAuth()) saveMutation.mutate();
+//           }}
+//           className="flex items-center gap-2 hover:text-blue-600 transition"
+//           title="Save post"
+//         >
+//           {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+//           <span>{isSaved ? "Saved" : "Save"}</span>
+//         </button>
+
+//         {/* Like */}
+//         <LikeButton
+//           postId={post._id}
+//           initialLiked={post.likes?.includes(user?.id)}
+//           initialLikes={post.likes?.length || 0}
+//           onUnauthenticated={() => navigate("/sign-up")}
+//         />
+
+//         {/* Comment */}
+//         <button
+//           onClick={handleCommentClick}
+//           className="flex items-center gap-2 hover:text-blue-600 transition"
+//           title="Comment"
+//         >
+//           <FaRegCommentDots />
+//           <span>Comment</span>
+//         </button>
+
+//         {/* Share */}
+//         <button
+//           onClick={() => setShowShareModal(true)}
+//           className="flex items-center gap-2 hover:text-blue-600 transition"
+//           title="Share"
+//         >
+//           <FaShareAlt />
+//           <span>Share</span>
+//         </button>
+
+//         {/* Feature */}
+//         {isAdmin && (
+//           <button
+//             onClick={() => featureMutation.mutate()}
+//             className="flex items-center gap-2 hover:text-yellow-500 transition"
+//             title="Feature"
+//           >
+//             <FaStar />
+//             <span>{post.isFeatured ? "Featured" : "Feature"}</span>
+//           </button>
+//         )}
+
+//         {/* Delete */}
+//         {user && (isPostOwner || isAdmin) && (
+//           <button
+//             onClick={() => deleteMutation.mutate()}
+//             className="flex items-center gap-2 text-red-500 hover:text-red-700 transition"
+//             title="Delete"
+//           >
+//             <FaTrashAlt />
+//             <span>Delete</span>
+//             {deleteMutation.isPending && (
+//               <span className="text-xs">(deleting...)</span>
+//             )}
+//           </button>
+//         )}
+//       </div>
+
+//       {/* Share Modal */}
+//       {showShareModal && (
+//         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
+//           <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl animate-fadeIn relative">
+//             <h2 className="text-lg font-semibold mb-4 text-gray-800">
+//               Share this post
+//             </h2>
+//             <input
+//               readOnly
+//               value={shareUrl}
+//               className="w-full border rounded px-3 py-2 text-sm bg-gray-100 mb-3"
+//             />
+//             <button
+//               onClick={handleCopyLink}
+//               className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+//             >
+//               {copied ? "✅ Link Copied!" : "📋 Copy Link"}
+//             </button>
+
+//             <div className="flex justify-around items-center mt-4 text-xl">
+//               <a
+//                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+//                   shareUrl
+//                 )}`}
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 className="text-blue-500 hover:text-blue-700"
+//                 title="Share on Twitter"
+//               >
+//                 <FaTwitter />
+//               </a>
+//               <a
+//                 href={`https://wa.me/?text=${encodeURIComponent(shareUrl)}`}
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 className="text-green-500 hover:text-green-600"
+//                 title="Share on WhatsApp"
+//               >
+//                 <FaWhatsapp />
+//               </a>
+//               <a
+//                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+//                   shareUrl
+//                 )}`}
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 className="text-blue-700 hover:text-blue-900"
+//                 title="Share on Facebook"
+//               >
+//                 <FaFacebookF />
+//               </a>
+//             </div>
+
+//             <button
+//               onClick={() => setShowShareModal(false)}
+//               className="mt-5 w-full py-2 bg-gray-200 text-black rounded hover:bg-gray-300"
+//             >
+//               Close
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default PostMenuAction;
+
+
 import { useUser, useAuth } from "@clerk/clerk-react";
+import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { toast } from "react-toastify"; // ✅ Added toast import
+import { toast } from "react-toastify";
+import LikeButton from "./LikeButton";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaWhatsapp,
+  FaRegBookmark,
+  FaBookmark,
+  FaShareAlt,
+  FaTrashAlt,
+  FaStar,
+  FaRegCommentDots,
+} from "react-icons/fa";
 
 const PostMenuAction = ({ post }) => {
   const { user, isLoaded } = useUser();
@@ -11,39 +302,58 @@ const PostMenuAction = ({ post }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const {
-    isPending,
-    error,
-    data: savedPosts,
-  } = useQuery({
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const shareUrl = `${window.location.origin}/posts/${post.slug}`;
+
+  const currentUsername =
+    user?.username ||
+    user?.publicMetadata?.username ||
+    user?.primaryEmailAddress?.emailAddress;
+
+  const isAdmin = user?.publicMetadata?.role === "admin";
+  const isPostOwner = post?.user?.username === currentUsername;
+
+  const { data: savedPosts = [] } = useQuery({
     queryKey: ["savedPosts"],
     queryFn: async () => {
       const token = await getToken();
-      return axios.get(`${import.meta.env.VITE_API_URL}/users/saved`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/users/saved`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return res.data;
     },
+    enabled: !!user,
   });
 
-  const isSaved = savedPosts?.data?.some((p) => p === post._id) || false;
+  const isSaved = savedPosts.includes(post._id);
+
+  const redirectIfNotAuth = () => {
+    if (!user) {
+      navigate("/sign-up");
+      return true;
+    }
+    return false;
+  };
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
       const token = await getToken();
-      return axios.delete(`${import.meta.env.VITE_API_URL}/posts/${post._id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      return axios.delete(
+        `${import.meta.env.VITE_API_URL}/posts/${post._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
     },
     onSuccess: () => {
+      toast.success("Post deleted successfully");
       navigate("/");
     },
-    onError: (error) => {
-      console.log("Error to delete post", error);
-    },
+    onError: () => toast.error("Failed to delete post"),
   });
 
   const saveMutation = useMutation({
@@ -53,46 +363,29 @@ const PostMenuAction = ({ post }) => {
         `${import.meta.env.VITE_API_URL}/users/save`,
         { postId: post._id },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedPosts"] });
+
+      // ✅ Only show toast when newly saved
       if (!isSaved) {
-  toast.success(
-    <div className="text-gray-800 text-base">
-      Post saved successfully!{" "}
-      <Link
-        to="/saved"
-        className="text-blue-600 underline font-semibold hover:text-blue-800"
-      >
-        View Saved Posts
-      </Link>
-    </div>,
-    {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: "light",
-      toastClassName:
-        "text-lg px-6 py-4 rounded-xl shadow-md font-semibold bg-white border border-gray-300",
-      icon: "💾",
-    }
-  );
-}
-
-
-
+        toast.success(
+          <div>
+            Post saved!{" "}
+            <Link
+              to="/saved"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              View Saved
+            </Link>
+          </div>
+        );
+      }
     },
-    onError: (error) => {
-      console.log("Error saving post", error);
-    },
+    onError: () => toast.error("Failed to save post"),
   });
 
   const featureMutation = useMutation({
@@ -102,143 +395,179 @@ const PostMenuAction = ({ post }) => {
         `${import.meta.env.VITE_API_URL}/posts/feature`,
         { postId: post._id },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["post", post.slug] });
-    },
-    onError: (error) => {
-      console.log("Error featuring post", error);
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["post", post.slug] }),
   });
 
-  const handleDelete = () => deleteMutation.mutate();
-  const handleFeature = () => featureMutation.mutate();
-  const handleSave = () => {
-    if (!user) return navigate("/login");
-    saveMutation.mutate();
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy link.");
+    }
   };
 
-  useEffect(() => {
-    console.log("🟢 Clerk user:", user);
-    console.log("🟢 isLoaded:", isLoaded);
-    console.log("🟢 Post received:", post);
-  }, [user, isLoaded, post]);
+  const handleCommentClick = () => {
+    if (redirectIfNotAuth()) return;
+    const el = document.getElementById("comments");
+    if (el) {
+      // 👇 Forces scroll to re-trigger even if in view
+      el.scrollIntoView({ behavior: "auto", block: "center" });
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+    }
+  };
 
   if (!isLoaded) return null;
 
-  const isAdmin = user?.publicMetadata?.role === "admin" || false;
-
-  const currentUsername =
-    user?.username || user?.publicMetadata?.username || user?.primaryEmailAddress?.emailAddress;
-
-  const isPostOwner = post?.user?.username === currentUsername;
-
   return (
     <div>
-      <h1 className="mt-8 mb-4 text-sm font-medium">Actions</h1>
+      <h1 className="mt-8 mb-4 text-sm font-semibold text-gray-700">
+        Actions
+      </h1>
 
-      {isPending ? (
-        "Loading..."
-      ) : error ? (
-        "Failed to load saved posts!"
-      ) : (
-        <div
-          className="flex items-center gap-2 py-2 text-sm cursor-pointer"
-          onClick={handleSave}
+      <div className="flex flex-wrap gap-5 text-sm items-center text-gray-600">
+        {/* Save */}
+        <button
+          onClick={() => {
+            if (!redirectIfNotAuth() && !saveMutation.isPending) {
+              saveMutation.mutate();
+            }
+          }}
+          className="flex items-center gap-2 hover:text-blue-600 transition"
+          title="Save post"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 48 48"
-            width="20px"
-            height="20px"
+          {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+          <span>{isSaved ? "Saved" : "Save"}</span>
+        </button>
+
+        {/* Like */}
+        <LikeButton
+          postId={post._id}
+          initialLiked={post.likes?.includes(user?.id)}
+          initialLikes={post.likes?.length || 0}
+          onUnauthenticated={() => navigate("/sign-up")}
+        />
+
+        {/* Comment */}
+        <button
+          onClick={handleCommentClick}
+          className="flex items-center gap-2 hover:text-blue-600 transition"
+          title="Comment"
+        >
+          <FaRegCommentDots />
+          <span>Comment</span>
+        </button>
+
+        {/* Share */}
+        <button
+          onClick={() => setShowShareModal(true)}
+          className="flex items-center gap-2 hover:text-blue-600 transition"
+          title="Share"
+        >
+          <FaShareAlt />
+          <span>Share</span>
+        </button>
+
+        {/* Feature (admin only) */}
+        {isAdmin && (
+          <button
+            onClick={() => featureMutation.mutate()}
+            className="flex items-center gap-2 hover:text-yellow-500 transition"
+            title="Feature post"
           >
-            <path
-              d="M12 4C10.3 4 9 5.3 9 7v34l15-9 15 9V7c0-1.7-1.3-3-3-3H12z"
-              stroke="black"
-              strokeWidth="2"
-              fill={
-                saveMutation.isPending
-                  ? isSaved
-                    ? "none"
-                    : "black"
-                  : isSaved
-                  ? "black"
-                  : "none"
-              }
+            <FaStar />
+            <span>{post.isFeatured ? "Featured" : "Feature"}</span>
+          </button>
+        )}
+
+        {/* Delete */}
+        {(isPostOwner || isAdmin) && (
+          <button
+            onClick={() => deleteMutation.mutate()}
+            className="flex items-center gap-2 text-red-500 hover:text-red-700 transition"
+            title="Delete post"
+          >
+            <FaTrashAlt />
+            <span>Delete</span>
+            {deleteMutation.isPending && (
+              <span className="text-xs">(deleting...)</span>
+            )}
+          </button>
+        )}
+      </div>
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-2xl animate-fadeIn relative">
+            <h2 className="text-lg font-semibold mb-4 text-gray-800">
+              Share this post
+            </h2>
+            <input
+              readOnly
+              value={shareUrl}
+              className="w-full border rounded px-3 py-2 text-sm bg-gray-100 mb-3"
             />
-          </svg>
-          <span>Save this Post</span>
+            <button
+              onClick={handleCopyLink}
+              className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              {copied ? "✅ Link Copied!" : "📋 Copy Link"}
+            </button>
+
+            <div className="flex justify-around items-center mt-4 text-xl">
+              <a
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                  shareUrl
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 hover:text-blue-700"
+                title="Share on Twitter"
+              >
+                <FaTwitter />
+              </a>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(shareUrl)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-green-500 hover:text-green-600"
+                title="Share on WhatsApp"
+              >
+                <FaWhatsapp />
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  shareUrl
+                )}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-700 hover:text-blue-900"
+                title="Share on Facebook"
+              >
+                <FaFacebookF />
+              </a>
+            </div>
+
+            <button
+              onClick={() => setShowShareModal(false)}
+              className="mt-5 w-full py-2 bg-gray-200 text-black rounded hover:bg-gray-300"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
-
-      {isAdmin && (
-        <div
-          className="flex items-center gap-2 py-2 text-sm cursor-pointer"
-          onClick={handleFeature}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 48 48"
-            width="20px"
-            height="20px"
-          >
-            <path
-              d="M24 2L29.39 16.26L44 18.18L33 29.24L35.82 44L24 37L12.18 44L15 29.24L4 18.18L18.61 16.26L24 2Z"
-              stroke="black"
-              strokeWidth="2"
-              fill={
-                featureMutation.isPending
-                  ? post.isFeatured
-                    ? "none"
-                    : "black"
-                  : post.isFeatured
-                  ? "black"
-                  : "none"
-              }
-            />
-          </svg>
-          
-        </div>
-      )}
-
-      {user && (isPostOwner || isAdmin) && (
-  <div
-    className="flex items-center gap-2 py-2 text-sm cursor-pointer hover:text-red-600 transition"
-    onClick={handleDelete}
-  >
-    {/* Trash Icon SVG */}
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="20px"
-      height="20px"
-      fill="none"
-      stroke="red"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="3 6 5 6 21 6" />
-      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-      <line x1="10" y1="11" x2="10" y2="17" />
-      <line x1="14" y1="11" x2="14" y2="17" />
-    </svg>
-
-    {/* Text */}
-    <span>Delete this Post</span>
-
-    {/* Optional Loading Text */}
-    {deleteMutation.isPending && (
-      <span className="text-xs text-red-400">(deleting...)</span>
-    )}
-  </div>
-)}
     </div>
   );
 };
+
 export default PostMenuAction;
