@@ -7,68 +7,106 @@ export const getPosts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
 
-  const query = {};
-
   const cat = req.query.cat;
   const author = req.query.author;
   const searchQuery = req.query.search;
   const sortQuery = req.query.sort;
   const featured = req.query.featured;
 
+  let matchStage = {};
+
+  //
   if (cat) {
-    query.category = cat;
+    matchStage.category = cat;
   }
 
   if (searchQuery) {
-    query.title = { $regex: searchQuery, $options: "i" };
+    matchStage.title = { $regex: searchQuery, $options: "i" };
+  }
+
+  if (featured) {
+    matchStage.isFeatured = true;
+  }
+
+  if (sortQuery === "trending") {
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    matchStage.createdAt = { $gte: oneWeekAgo };
   }
 
   if (author) {
     const user = await User.findOne({ username: author }).select("_id");
-
     if (!user) {
       return res.status(404).json("No post found!");
     }
-
-    query.user = user._id;
+    matchStage.user = user._id;
   }
 
-  let sortObj = { createdAt: -1 };
-
-  if (sortQuery) {
-    switch (sortObj) {
-      case "newest":
-        sortObj = { createdAt: -1 };
-        break;
-      case "oldest":
-        sortObj = { createdAt: 1 };
-        break;
-      case "popular":
-        sortObj = { visit: -1 };
-        break;
-      case "trending":
-        sortObj = { visit: -1 };
-        query.createdAt = {
-          $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
-        };
-        break;
-      default:
-        break;
-    }
-  }
-
-  if (featured) {
-    query.isFeatured = true;
+  let sortStage = { createdAt: -1 };
+  switch (sortQuery) {
+    case "oldest":
+      sortStage = { createdAt: 1 };
+      break;
+    case "popular":
+    case "trending":
+      sortStage = { likesCount: -1 };
+      break;
+    case "newest":
+    default:
+      sortStage = { createdAt: -1 };
+      break;
   }
 
   try {
-    const posts = await Post.find(query)
-      .sort(sortObj)
-      .populate("user", "username")
-      .limit(limit)
-      .skip((page - 1) * limit);
+    const aggregationPipeline = [
+      { $match: matchStage },
+      {
+        $addFields: {
+          likesCount: { $size: { $ifNull: ["$likes", []] } },
+        },
+      },
+      {
+        $sort: sortStage,
+      },
+      {
+        $skip: (page - 1) * limit,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "user",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      {
+        $unwind: "$user",
+      },
+      {
+        $project: {
+          img:1,
+          desc:1,
+          title: 1,
+          content: 1,
+          category: 1,
+          likes: 1,
+          likesCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          isFeatured: 1,
+          user: {
+            _id: 1,
+            username: 1,
+          },
+        },
+      },
+    ];
 
-    const totalPosts = await Post.countDocuments();
+    const posts = await Post.aggregate(aggregationPipeline);
+
+    const totalPosts = await Post.countDocuments(matchStage);
     const hasMore = page * limit < totalPosts;
 
     res.status(200).json({ posts, hasMore });

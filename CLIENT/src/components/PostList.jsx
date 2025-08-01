@@ -1,39 +1,35 @@
-import PostListItems from './PostListItems';
+import PostListItems from "./PostListItems";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 
-
-// ✅ 1. Fetch function for posts with pagination and search filters
-const fetchPosts = async (pageParam, searchParams) => {
-  // Convert URLSearchParams into plain object (e.g., { tag: 'tech', sort: 'latest' })
-  const searchParamsObj = Object.fromEntries([...searchParams]);
-
-  console.log("Search Params Object: ", searchParamsObj); // ✅ Debugging help
-
+const fetchPosts = async (pageParam, searchParamsObj) => {
   try {
-    // Axios GET with pagination and filter params
     const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts`, {
       params: {
-        page: pageParam, // from infinite query
+        page: pageParam,
         limit: 5,
-        ...searchParamsObj, // additional filters like category, tag, etc.
+        ...searchParamsObj,
       },
     });
 
-    return res.data; // should contain { posts: [...], hasMore: true/false }
+    return res.data;
   } catch (err) {
-    console.error("Error fetching posts: ", err); // ✅ Log server error
+    console.error("Error fetching posts: ", err);
     throw new Error(err?.response?.data?.message || "Failed to fetch posts");
   }
 };
 
-
 const PostList = () => {
-  const [searchParams] = useSearchParams(); // ✅ 2. Get query params from URL like ?tag=tech
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // ✅ 3. Infinite Query setup
+  // Convert URLSearchParams → plain object
+  const searchParamsObj = Object.fromEntries([...searchParams.entries()]);
+  const sort = searchParamsObj.sort || "newest"; // default fallback
+
+  // Infinite Query
   const {
     data,
     error,
@@ -43,23 +39,47 @@ const PostList = () => {
     isFetchingNextPage,
     status,
   } = useInfiniteQuery({
-    queryKey: ['posts', searchParams.toString()], // ✅ re-fetch if search query changes
-    queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParams), // ✅ pass both page and filters
+    queryKey: ["posts", searchParams.toString()],
+    queryFn: ({ pageParam = 1 }) => fetchPosts(pageParam, searchParamsObj),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) =>
-      lastPage?.hasMore ? allPages.length + 1 : undefined, // backend should send hasMore flag
+      lastPage?.hasMore ? allPages.length + 1 : undefined,
   });
 
-  // ✅ 4. Handle loading or error state
-  if (status === "loading") return <div>Loading...</div>;
-  if (status === "error") return <div>An error has occurred: {error.message}</div>;
-
-  // ✅ 5. Flatten paginated posts into single list
   const allPosts = data?.pages?.flatMap((page) => page.posts) || [];
 
+  // Update only sort param without clearing others
+  const handleSortChange = (newSort) => {
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set("sort", newSort);
+    setSearchParams(newParams); // ✅ preserves all other existing params
+  };
+
+  if (status === "loading") return <div>Loading...</div>;
+  if (status === "error")
+    return <div>An error has occurred: {error.message}</div>;
+
   return (
-    <div className="min-h-screen overflow-auto ">
-      {/* ✅ 6. Infinite Scroll component handles loading more posts */}
+    <div className="min-h-screen overflow-auto">
+      <div className="flex gap-2 mb-4">
+        <button
+          className={`${
+            sort === "newest" ? "bg-black" : "bg-gray-600"
+          } text-white flex-1 rounded p-2`}
+          onClick={() => handleSortChange("newest")}
+        >
+          Newest
+        </button>
+        <button
+          className={`${
+            sort === "popular" ? "bg-black" : "bg-gray-600"
+          } text-white flex-1 rounded p-2`}
+          onClick={() => handleSortChange("popular")}
+        >
+          Popular
+        </button>
+      </div>
+
       <InfiniteScroll
         dataLength={allPosts.length}
         next={fetchNextPage}
