@@ -61,24 +61,29 @@ const PostList = () => {
 
   return (
     <div className="min-h-screen overflow-auto">
-      <div className="flex gap-2 mb-4">
-        <button
-          className={`${
-            sort === "newest" ? "bg-black" : "bg-gray-600"
-          } text-white flex-1 rounded p-2`}
-          onClick={() => handleSortChange("newest")}
-        >
-          Newest
-        </button>
-        <button
-          className={`${
-            sort === "popular" ? "bg-black" : "bg-gray-600"
-          } text-white flex-1 rounded p-2`}
-          onClick={() => handleSortChange("popular")}
-        >
-          Popular
-        </button>
-      </div>
+      <div className="flex justify-center mb-6">
+  <div className="flex bg-white border border-gray-300 rounded-full shadow-md overflow-hidden">
+    {[
+      { type: "newest", label: " Newest" },
+      { type: "popular", label: " Popular" },
+    ].map(({ type, label }) => (
+      <button
+        key={type}
+        onClick={() => handleSortChange(type)}
+        className={`px-5 py-2 text-sm font-medium transition-all duration-200 
+          ${
+            sort === type
+              ? "bg-gray-900 text-white shadow-inner"
+              : "text-gray-700 hover:bg-gray-100"
+          }`}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+</div>
+
+
 
       <InfiniteScroll
         dataLength={allPosts.length}

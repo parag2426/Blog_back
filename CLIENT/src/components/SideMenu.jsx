@@ -34,7 +34,7 @@ const SideMenu = () => {
           />
           Newest
         </label>
-        <label className="flex items-center gap-2 cursor-pointer">
+        {/* <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="radio"
             name="sort"
@@ -43,7 +43,7 @@ const SideMenu = () => {
             className="appearance-none w-4 h-4 border-[1.5px] bg-white border-blue-800 cursor-pointer rounded-sm checked:bg-blue-800"
           />
           Popular
-        </label>
+        </label> */}
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="radio"
